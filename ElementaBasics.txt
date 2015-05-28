@@ -1,0 +1,261 @@
+Attributes
+	Utility
+		Cast range up +.1
+		Movement Point up +.2
+		Line of sight up +.1
+		Actions per turn +.2
+		Pro-Power +1%
+
+	Power
+		Cast area up +.5
+		Power up +.5
+
+	Defense
+		HP up +10
+		Counter-Power +1%
+
+	+5 points at start of the game
+	+1 point each level
+	Abilities level as used
+	Elements level as used
+	All numbers are rounded down in calculations
+	Cast Area must be within Line of sight and Cast range
+
+	Basics:
+		Cast Range:		3
+		Movement Points:	2
+		Line of Sight:		4
+		Actions per turn:	2
+		Pro-Power:		0
+		Cast Area:		1
+		Power:			10
+		HP			50
+		Counter-Power:		0
+
+
+Abilities
+	Controller
+		Utility
+			Manipulation range
+		Power
+			Manipulation magnitude
+		Weak to Destroyer
+		Detects possible manipulation targets
+	Creator
+		Utility
+			Creation range
+		Power
+			Creation size
+			Creation damage
+		Weak to Controller
+	Destroyer
+		Utility
+			Deletion range
+		Power
+			Deletion magnitude
+		Weak to Restorer
+	Restorer
+		Utility
+			Restoration range
+		Power
+			Restoration magnitude
+		Weak to Creator
+		Detects possible restoration targets
+
+Elements
+	Wood
+		Pro with Water
+		Countered with Metal
+
+		Special feature: Forest
+
+		Controller:
+			Slow target in Wood tile in range
+			Deal damage with Wood tile in range
+			Immobilize target(s)
+			Control Wood-elemental
+		Creator:
+			Add Wood to tile
+			Deal Wood-Damage
+			Make Wood-elemental
+		Destroyer:
+			Remove Wood from tile
+			Reduce incoming Wood
+			Damage Wood-elemental
+		Restorer:
+			Recover Wood in tile
+			Refresh Wood effects
+			Reduce Wood-Destroyer effects
+			Heal Wood-elemental
+
+	Fire
+		Pro with Wood
+		Countered with Water
+
+		Controller:
+			Deal Damage with Fire with tile in range
+				+Damage per turn
+			Control Fire-elemental
+		Creator:
+			Add Fire to tile
+			Deal Fire-damage
+				+Damage per turn
+			Make Fire-elemental
+		Destroyer:
+			Remove Fire from tile
+			Reduce incoming Fire
+			Damage Fire-elemental
+		Restorer:
+			Recover Fire in tile
+			Refresh Fire effects
+			Reduce Fire-Destroyer effects
+			Heal Fire-elemental
+
+	Ground
+		Pro with Fire
+		Countered with Wood
+
+		Special feature: Pit, slide, hill, mountain
+
+		Controller:
+			Move Ground from tile to tile in range
+			Deal Ground damage with Ground tile in range
+			Ground-Block "projectiles" with raised ground
+				Requires control of 3+ adjent tiles
+				Points used return to effected tiles after block is destroyed.
+			Control Ground-elemental
+		Creator:
+			Create Ground to tile
+			Deal Ground damage
+			Ground-Block
+				Points used are distributed to siding tiles
+					1/4 to caster tile per each side
+					3/4 to adjent tile per each side
+			Make Ground-elemental
+		Destroyer:
+			Remove Ground from tile
+			Reduce incoming Ground damage
+			Damage Ground-elemental
+		Restorer:
+			Recover Ground-Block
+			Reduce Ground-destroyer effects
+			Heal Ground-elemental
+
+	Metal
+		Pro with Ground
+		Countered with Fire
+
+		Special feature: Debris
+
+		Controller:
+			Move Metal from tile to tile in range
+			Deal Metal damage with Metal tile in range
+			Block
+				Points used distributed to adjent "lower" tile
+				Debris equal to points.
+			Control Metal-elemental
+		Creator:
+			Create Metal to tile
+			Deal Metal damage
+			Metal-Block
+				Points used are distributed as debris to siding tiles
+					1/4 to caster tile per each side
+					3/4 to adjent tile per each side
+			Make Metal-elemental
+		Destroyer:
+			Remove Metal from tile
+			Reduce incoming Metal damage
+			Damage Metal-elemental
+		Restorer:
+			Recover Metal-Block
+			Reduce Metal-destroyer effects
+			Heal Metal-elemental
+	Water
+		Pro with Metal
+		Countered with Ground
+		
+		Special Feature: Water, Swamp
+
+		Controller:
+			Move Water from tile to tile
+			Deal Water damage with Water tile in range
+			Control Water-elemental
+		Creator:
+			Create Water to tile
+			Deal Water damage
+			Make Water-elemental
+		Destroyer:
+			Remove Water from tile
+			Reduce incoming Water damage
+			Damage Water-elemental
+		Restorer:
+			Recover Metal-Block
+			Reduce Metal-destroyer effects
+			Heal Water-elemental
+
+Terrain
+	Ground points are about equal to elevation level.
+	
+
+	Forest
+		Wood tiles with 1-6 Wood tiles and/or 1-5 Water tiles next to them can be forest
+		Forest automatically grows in such tiles in 10 turns
+		Forest restores health if have Wood-affinity
+
+	Fire
+		Fire tiles deal damage each turn based on Fire-affinity and Fire-points in tile.
+		Tiles with 200 Fire-points are impassable.
+			Reduce Fire-points by 25% to make passable again.
+		Fire tiles turn to Ground tiles after fire extinguishes.
+		Fire burns away 10 points per turn
+			1 point with Wood in tile
+			-5 Wood each turn in tile
+
+	Elevation
+		+-50 Ground point difference
+			+1 Required Movement point
+			Cannot see to top.
+		+-100 Ground point difference
+			Passable downhill
+				-1 required Movement point
+			Impassable uphill without Wallclimb
+		+-150 Ground point difference
+			Normally impassable without Wallclimb
+		+-200+ Ground point difference
+			Cannot see down without Line of sight level 6
+			Each -50 points require one more level of LoS
+			
+	Debris
+		Each 4 Metal points equal to 1 Ground in elevation
+		Each 200 point difference increases movement point requirement by 1
+		600 points difference equals to impassable pile of debris
+		800 points is solid block, normal movement
+			Passable via adjent tiles of high debris or Ground
+	Water
+		Water advances 1 tile per 10 turns to negative Ground point
+		+10 Water to negative elevation each turn.
+		50 Water creates Water tile
+		Water heals characters. This stacks with forest.
+		Water is passable with Water-affinity and Swim
+	Swamp
+		For each 50 Wood point in Water tile or vice versa creates swamp
+		+1 Movement Point requirement per 50 points of non-dominant element
+		Turns to Wood tile with 4 times more Wood points compared to Water points
+
+Relations
+	Ability counters ability.
+	Countering elements get 50% Bonus to countered element.
+	Countering ability gets 50% Bonus to countered ability.
+	Boosted abilities get 50% Bonus.
+	Hindered abilities get 25% Penalty
+	With all elements having affinity, 100% Bonus is applied
+	These numbers stack additively.
+
+	With equal Defence and Utility
+		Fire-Creator-ability gets 100% Bonus towards Metal-Destroyer-attack.
+		Fire-Creator-ability gets 50% Bonus towards Metal-Creator-attack.
+
+	For 5 turns abilitys leave affinity to target area
+		Either boosts or hinders following abilitys
+		Each element refreshes their affinity
+		Tiletype has permanent affinity
