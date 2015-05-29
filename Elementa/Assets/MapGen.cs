@@ -46,22 +46,18 @@ public class MapGen : MonoBehaviour {
 			counter += 2;
 		}
 		*/
-		bool loop = true;
-		while (loop == true) 
-			if (Distance (gx, gy, gz) <= 5) {
+		for (gx = 0; gx < 10; gx++) {
 				gy = -gx / 2;
 				gz = -(gx + 1) / 2;
-				for (counter = 0; counter < 5; counter++) {				
+				for (counter = 0; counter < 10; counter++) {				
 					x = gx * .75f;
 					y = (gy - gz) * .45f;
 					Debug.Log (gx + " " + gy + " " + gz);
-					TileGenerator (x, y, gx, gy, gz);
+					if (Distance (gx, gy, gz) <= 5)
+						TileGenerator (x, y, gx, gy, gz);
 					gy++;
 					gz--;
 				}
-				gx++;
-				if (gx == 5) 
-					loop = false;
 			}
 
 	}
