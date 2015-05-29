@@ -195,17 +195,20 @@ Elements
 
 Terrain
 	Ground points are about equal to elevation level.
+	Movement point requirement 4+ is impassable
 	
 
 	Forest
-		Wood tiles with 1-6 Wood tiles and/or 1-5 Water tiles next to them can be forest
-		Forest automatically grows in such tiles in 10 turns
-		Forest restores health if have Wood-affinity
+		Wood tiles with 100+ Wood are forest
+		Forest restores health if player has Wood-affinity
+		Every 50 Wood over 50 increases movement point requirement by 1
+			Threshold for Wood-affinitied players
+				+50 at every 10 Wood levels
 
 	Fire
 		Fire tiles deal damage each turn based on Fire-affinity and Fire-points in tile.
 		Tiles with 200 Fire-points are impassable.
-			Reduce Fire-points by 25% to make passable again.
+			Reduce Fire-points to 150 to make passable again.
 		Fire tiles turn to Ground tiles after fire extinguishes.
 		Fire burns away 10 points per turn
 			1 point with Wood in tile
@@ -223,13 +226,13 @@ Terrain
 			Normally impassable without Wallclimb
 		+-200+ Ground point difference
 			Cannot see down without Line of sight level 6
-			Each -50 points require one more level of LoS
+				Each -50 points require one more level of LoS
 			
 	Debris
-		Each 4 Metal points equal to 1 Ground in elevation
-		Each 200 point difference increases movement point requirement by 1
-		600 points difference equals to impassable pile of debris
-		800 points is solid block, normal movement
+		Each 2 Metal points equal to 1 Ground in elevation
+		Each 100 point difference increases movement point requirement by 1
+		300 points difference equals to impassable pile of debris
+		400 points is solid block, normal movement
 			Passable via adjent tiles of high debris or Ground
 	Water
 		Water advances 1 tile per 10 turns to negative Ground point
