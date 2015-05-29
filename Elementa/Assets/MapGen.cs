@@ -11,7 +11,7 @@ public class MapGen : MonoBehaviour {
 	};
 
 	// Use this for initialization
-	void Start () {
+	void Start () {	
 		gx = 0;
 		gy = 0;
 		gz = 0;
@@ -23,22 +23,17 @@ public class MapGen : MonoBehaviour {
 					x = gx * .75f;
 					y = (gy - gz) * .45f;
 //					Debug.Log (gx + " " + gy + " " + gz);
-					if (Distance (gx, gy, gz) <= 5)
-					TileGenerator (x, y, gx, gy, gz);
+					if (Distance (gx, gy, gz) <= 5) {
+						TileGenerator (x, y, gx, gy, gz);
+					}
 					gy++;
 					gz--;
 				}
 			}
-
-	}
-
-	int Distance (int x, int y, int z) {
-		return (Mathf.Abs (-x) + Mathf.Abs (-y) + Mathf.Abs (-z)) / 2;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
 	}
 
 	void TileGenerator(float x, float y, int gx, int gy, int gz) {
@@ -59,6 +54,7 @@ public class MapGen : MonoBehaviour {
 			if (tmp.water <= 0) 
 				tmp.water = 0;
 			tmp.name = gx + "," + gy + "," + gz;
+			tmp.elevation = tmp.ground + Mathf.RoundToInt (tmp.metal / 2) - 400 + tmp.water;
 		}
 		else if (leEle == fire) {
 			tile = Instantiate (Resources.Load (tiles [1]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -69,6 +65,7 @@ public class MapGen : MonoBehaviour {
 			tmp.fire = Random.Range (0, 500);
 			tmp.ground = Random.Range (400, 1000);
 			tmp.name = gx + "," + gy + "," + gz;
+			tmp.elevation = tmp.ground + Mathf.RoundToInt (tmp.metal / 2) - 400 + tmp.water;
 		}		
 		else if (leEle == ground) {
 			tile = Instantiate (Resources.Load (tiles [2]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -84,6 +81,7 @@ public class MapGen : MonoBehaviour {
 			if (Random.Range (0, 10) == 10)
 				tmp.wood = Random.Range (0, Mathf.RoundToInt (tmp.ground / 10));
 			tmp.name = gx + "," + gy + "," + gz;
+			tmp.elevation = tmp.ground + Mathf.RoundToInt (tmp.metal / 2) - 400 + tmp.water;
 		}
 		else if (leEle == metal) {
 			tile = Instantiate (Resources.Load (tiles [3]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -99,6 +97,7 @@ public class MapGen : MonoBehaviour {
 			else if (Random.Range (0, 10) == 10) tmp.ground = Random.Range (0, 299);
 			else tmp.ground = 400; 
 			tmp.name = gx + "," + gy + "," + gz;
+			tmp.elevation = tmp.ground + Mathf.RoundToInt (tmp.metal / 2) - 400 + tmp.water;
 		}
 		else if (leEle == water) {
 			tile = Instantiate (Resources.Load (tiles [4]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -111,6 +110,11 @@ public class MapGen : MonoBehaviour {
 				tmp.wood = Random.Range(0, tmp.water);
 			tmp.ground = 400 - tmp.water;
 			tmp.name = gx + "," + gy + "," + gz;
+			tmp.elevation = tmp.ground + Mathf.RoundToInt (tmp.metal / 2) - 400 + tmp.water;
 		}
+	}
+
+	int Distance (int x, int y, int z) {
+		return (Mathf.Abs (-x) + Mathf.Abs (-y) + Mathf.Abs (-z)) / 2;
 	}
 }
