@@ -16,7 +16,6 @@ public class MapGen : MonoBehaviour {
 		gy = 0;
 		gz = 0;
 		int counter = 0;
-		int tCounter = 0;
 		for (gx = 0; gx < 10; gx++) {
 				gy = -gx / 2;
 				gz = -(gx + 1) / 2;
@@ -25,7 +24,7 @@ public class MapGen : MonoBehaviour {
 					y = (gy - gz) * .45f;
 //					Debug.Log (gx + " " + gy + " " + gz);
 					if (Distance (gx, gy, gz) <= 5)
-					TileGenerator (x, y, gx, gy, gz, tCounter);
+					TileGenerator (x, y, gx, gy, gz);
 					gy++;
 					gz--;
 				}
@@ -42,7 +41,7 @@ public class MapGen : MonoBehaviour {
 		
 	}
 
-	void TileGenerator(float x, float y, int gx, int gy, int gz, int tCounter) {
+	void TileGenerator(float x, float y, int gx, int gy, int gz) {
 		int wood = Random.Range (0, 100), fire = Random.Range (0, 100), ground = Random.Range (0, 100), metal = Random.Range (0, 100), water = Random.Range (0, 100);
 		int leEle = Mathf.Max (wood, fire, ground, metal, water);
 
