@@ -9,9 +9,6 @@ public class MapGen : MonoBehaviour {
 	string[] tiles = {
 		"Tiles/WoodTile", "Tiles/FireTile", "Tiles/GroundTile", "Tiles/MetalTile", "Tiles/WaterTile"
 	};
-	int[,] grid = new int[10,3];
-
-
 
 	// Use this for initialization
 	void Start () {
@@ -19,42 +16,16 @@ public class MapGen : MonoBehaviour {
 		gy = 0;
 		gz = 0;
 		int counter = 0;
-		/*
-		for (x = 0; x < 5; x += 1.5f) {
-			gy = -gx / 2;
-			gz = gy;
-			for (y = 0; y < 5; y += .9f) {				
-				Debug.Log (gx + " " + gy + " " + gz);
-				TileGenerator(x, y, gx, gy, gz);
-				gy++;
-				gz--;
-			}
-			gx += 2;
-			counter += 2;
-		}
-		gx = 1;
-		counter = 1;
-		for (x = .75f; x < 5; x += 1.5f) {
-			gy = (-gx + 1) / 2; gz = -gx - gy;
-			for (y = .45f; y < 5; y += .9f) {
-				Debug.Log (gx + " " + gy + " " + gz);
-				TileGenerator(x, y, gx, gy, gz);
-				gy++;
-				gz--;
-			}
-			gx += 2;
-			counter += 2;
-		}
-		*/
+		int tCounter = 0;
 		for (gx = 0; gx < 10; gx++) {
 				gy = -gx / 2;
 				gz = -(gx + 1) / 2;
 				for (counter = 0; counter < 10; counter++) {				
 					x = gx * .75f;
 					y = (gy - gz) * .45f;
-					Debug.Log (gx + " " + gy + " " + gz);
+//					Debug.Log (gx + " " + gy + " " + gz);
 					if (Distance (gx, gy, gz) <= 5)
-						TileGenerator (x, y, gx, gy, gz);
+					TileGenerator (x, y, gx, gy, gz, tCounter);
 					gy++;
 					gz--;
 				}
@@ -71,9 +42,10 @@ public class MapGen : MonoBehaviour {
 		
 	}
 
-	void TileGenerator(float x, float y, int gx, int gy, int gz) {
+	void TileGenerator(float x, float y, int gx, int gy, int gz, int tCounter) {
 		int wood = Random.Range (0, 100), fire = Random.Range (0, 100), ground = Random.Range (0, 100), metal = Random.Range (0, 100), water = Random.Range (0, 100);
 		int leEle = Mathf.Max (wood, fire, ground, metal, water);
+
 		if (leEle == wood) {
 			tile = Instantiate (Resources.Load (tiles [0]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
 			Tile tmp = tile.GetComponent<Tile> ();
@@ -81,11 +53,12 @@ public class MapGen : MonoBehaviour {
 			tmp.y = gy;
 			tmp.z = gz;
 			tmp.wood = Random.Range(0, 1000);
-			tmp.ground = Random.Range (0, Mathf.RoundToInt (tmp.wood / 4));
+			tmp.ground = Random.Range (0, 500);
 			if (Random.Range (0, 10) == 10)
 				tmp.water = Random.Range (0, 400 - tmp.ground);
 			if (tmp.water <= 0) 
 				tmp.water = 0;
+			tmp.name = gx + "," + gy + "," + gz;
 		}
 		else if (leEle == fire) {
 			tile = Instantiate (Resources.Load (tiles [1]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -95,6 +68,7 @@ public class MapGen : MonoBehaviour {
 			tmp.z = gz;
 			tmp.fire = Random.Range (0, 500);
 			tmp.ground = Random.Range (0, 500);
+			tmp.name = gx + "," + gy + "," + gz;
 		}		
 		else if (leEle == ground) {
 			tile = Instantiate (Resources.Load (tiles [2]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -109,6 +83,7 @@ public class MapGen : MonoBehaviour {
 			}
 			if (Random.Range (0, 10) == 10)
 				tmp.wood = Random.Range (0, Mathf.RoundToInt (tmp.ground / 10));
+			tmp.name = gx + "," + gy + "," + gz;
 		}
 		else if (leEle == metal) {
 			tile = Instantiate (Resources.Load (tiles [3]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -126,7 +101,7 @@ public class MapGen : MonoBehaviour {
 				tmp.ground = Random.Range (300, 599);
 			else if (Random.Range(0,10) == 10)
 				tmp.ground = Random.Range(0, 299);
-			tile = Instantiate (Resources.Load (tiles [3]), new Vector3 (x, y, tmp.elevation), transform.rotation) as GameObject;
+			tmp.name = gx + "," + gy + "," + gz;
 		}
 		else if (leEle == water) {
 			tile = Instantiate (Resources.Load (tiles [4]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -137,6 +112,7 @@ public class MapGen : MonoBehaviour {
 			tmp.water = Random.Range (0, 400);
 			if (Random.Range (0,20) == 20)
 				tmp.wood = Random.Range(0, tmp.water);
+			tmp.name = gx + "," + gy + "," + gz;
 		}
 	}
 }
