@@ -52,9 +52,10 @@ public class MapGen : MonoBehaviour {
 			tmp.y = gy;
 			tmp.z = gz;
 			tmp.wood = Random.Range(0, 1000);
-			tmp.ground = Random.Range (0, 500);
-			if (Random.Range (0, 10) == 10)
+			tmp.ground = Random.Range (0, 1000);
+			if (Random.Range (0, 5) == 5)
 				tmp.water = Random.Range (0, 400 - tmp.ground);
+			else if (tmp.ground < 400) tmp.ground += 400;
 			if (tmp.water <= 0) 
 				tmp.water = 0;
 			tmp.name = gx + "," + gy + "," + gz;
@@ -66,7 +67,7 @@ public class MapGen : MonoBehaviour {
 			tmp.y = gy;
 			tmp.z = gz;
 			tmp.fire = Random.Range (0, 500);
-			tmp.ground = Random.Range (0, 500);
+			tmp.ground = Random.Range (400, 1000);
 			tmp.name = gx + "," + gy + "," + gz;
 		}		
 		else if (leEle == ground) {
@@ -75,7 +76,7 @@ public class MapGen : MonoBehaviour {
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
-			tmp.ground = Random.Range(-400, 1000);
+			tmp.ground = Random.Range(400, 1400);
 			if (Random.Range (0,20) == 20) {
 				int k = Random.Range (0, 500);
 				tmp.metal = k - k % 400;
@@ -90,16 +91,13 @@ public class MapGen : MonoBehaviour {
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
-			metal = Random.Range(0, 1000);
-			if (metal > 400)
-				tmp.metal = metal - metal % 400;
+			metal = Random.Range(0, 2800);
+			if (metal > 400) tmp.metal = metal - metal % 400;
 			else tmp.metal = metal;
-			if (Random.Range(0,100) == 100)
-			    tmp.ground = Random.Range (600, 1000);
-			else if (Random.Range (0,20) == 20)
-				tmp.ground = Random.Range (300, 599);
-			else if (Random.Range(0,10) == 10)
-				tmp.ground = Random.Range(0, 299);
+			if (Random.Range(0, 100) == 100)     tmp.ground = Random.Range (600, 1000);
+			else if (Random.Range (0, 20) == 20)	tmp.ground = Random.Range (300, 599);
+			else if (Random.Range (0, 10) == 10) tmp.ground = Random.Range (0, 299);
+			else tmp.ground = 400; 
 			tmp.name = gx + "," + gy + "," + gz;
 		}
 		else if (leEle == water) {
@@ -108,9 +106,10 @@ public class MapGen : MonoBehaviour {
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
-			tmp.water = Random.Range (0, 400);
+			tmp.water = Random.Range (1, 400);
 			if (Random.Range (0,20) == 20)
 				tmp.wood = Random.Range(0, tmp.water);
+			tmp.ground = 400 - tmp.water;
 			tmp.name = gx + "," + gy + "," + gz;
 		}
 	}

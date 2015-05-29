@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 1fc9f86052d75594cbf1304a81a739e4
-timeCreated: 1432728255
+timeCreated: 1432889031
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -9,6 +9,18 @@ TextureImporter:
     21300004: Gridparts_2
     21300006: Gridparts_3
     21300008: Gridparts_4
+    21300010: Gridparts_5
+    21300012: Gridparts_6
+    21300014: Gridparts_7
+    21300016: Gridparts_8
+    21300018: Gridparts_9
+    21300020: Gridparts_10
+    21300022: Gridparts_11
+    21300024: Gridparts_12
+    21300026: Gridparts_13
+    21300028: Gridparts_14
+    21300030: Gridparts_15
+    21300032: Gridparts_16
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -58,7 +70,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 190
         width: 105
         height: 95
       alignment: 0
@@ -68,7 +80,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 105
-        y: 0
+        y: 190
         width: 105
         height: 95
       alignment: 0
@@ -78,7 +90,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 210
-        y: 0
+        y: 190
         width: 105
         height: 95
       alignment: 0
@@ -88,7 +100,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 315
-        y: 0
+        y: 190
         width: 105
         height: 95
       alignment: 0
@@ -98,6 +110,126 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 420
+        y: 190
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 95
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_6
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 95
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_7
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 95
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_8
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 95
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_9
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 95
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_10
+      rect:
+        serializedVersion: 2
+        x: 525
+        y: 95
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_11
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_12
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 0
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_13
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 0
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_14
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 0
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_15
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 0
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Gridparts_16
+      rect:
+        serializedVersion: 2
+        x: 525
         y: 0
         width: 105
         height: 95
