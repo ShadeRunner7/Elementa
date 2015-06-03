@@ -6,6 +6,7 @@ public class UnlimitedButtonWorks : MonoBehaviour {
 
 	Text buttonT, MP, AP;
 	GameObject[] players;
+	GameObject cam;
 	int k;
 	Button test;
 
@@ -17,6 +18,7 @@ public class UnlimitedButtonWorks : MonoBehaviour {
 			buttonT = transform.FindChild ("PlayerBText").GetComponent<Text> ();
 			MP = transform.FindChild ("MPText").GetComponent<Text> ();
 			AP = transform.FindChild ("APText").GetComponent<Text> ();
+			cam = GameObject.Find ("Main Camera");
 			selectChar();
 		}
 	}
@@ -36,8 +38,12 @@ public class UnlimitedButtonWorks : MonoBehaviour {
 		buttonT.text = players [k].GetComponent<Character> ().name;
 		MP.text = players [k].GetComponent<Character> ().MP.ToString ();
 		AP.text = players [k].GetComponent<Character> ().AP.ToString ();
+		cam.SendMessage ("SetTarget", players [k], SendMessageOptions.DontRequireReceiver);
 		k++;
 	}
 
-
+	public void MoveChar () {
+		players [k].SendMessage ("position", SendMessageOptions.DontRequireReceiver);
+		players [k].SendMessage ("FoW", SendMessageOptions.DontRequireReceiver);
+	}
 }

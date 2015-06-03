@@ -86,7 +86,6 @@ public class HMapGen : MonoBehaviour {
 				hTile = Instantiate (Resources.Load ("HTiles/H-100Tile" + a), new Vector3 (x * .75f, (y - z) * .45f + .45f, 0), transform.rotation) as GameObject;
 		}*/
 	}
-
 	
 	// Update is called once per frame
 	void Update () {

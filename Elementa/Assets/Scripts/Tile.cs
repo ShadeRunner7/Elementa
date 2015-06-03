@@ -6,7 +6,7 @@ public class Tile : MonoBehaviour {
 	public int x, y, z,
 			   wood, fire, ground, metal, water,
 			   elevation;
-	public bool vision = true;
+	public int visionLevel = 0;
 	
 	public GameObject adj0, adj1, adj2, adj3, adj4, adj5;
 	Character player;
@@ -23,6 +23,12 @@ public class Tile : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if (visionLevel == 0)
+			GetComponent<SpriteRenderer> ().color = Color.black;
+		else if (visionLevel == 1)
+			GetComponent<SpriteRenderer> ().color = Color.grey;
+		else if (visionLevel == 2)
+			GetComponent<SpriteRenderer> ().color = Color.white;
 	}
 
 	public void PlayerTile(bool a) {

@@ -47,6 +47,7 @@ public class MapGen : MonoBehaviour {
 					gz--;
 				}
 			}
+			character.SendMessageUpwards ("Fow", SendMessageOptions.DontRequireReceiver); 	
 		}
 	}
 
@@ -128,8 +129,7 @@ public class MapGen : MonoBehaviour {
 		}
 	}
 
-	public int Distance (int x0, int y0, int z0, int x1, int y1, int z1) {
-//		return (Mathf.Abs (x0-x1) + Mathf.Abs (y0-y1) + Mathf.Abs (z0-z1)) / 2;
+	int Distance (int x0, int y0, int z0, int x1, int y1, int z1) {
 		return Mathf.Max (Mathf.Abs (x0 - x1), Mathf.Abs (y0 - y1), Mathf.Abs (z0 - z1));
 	}
 }
