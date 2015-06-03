@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Tile : MonoBehaviour {
@@ -6,8 +6,10 @@ public class Tile : MonoBehaviour {
 	public int x, y, z,
 			   wood, fire, ground, metal, water,
 			   elevation;
+	public bool vision = true;
 	
 	public GameObject adj0, adj1, adj2, adj3, adj4, adj5;
+	Character player;
 
 	// Use this for initialization
 	void Start () {		
@@ -21,6 +23,13 @@ public class Tile : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+	}
+
+	public void PlayerTile(bool a) {
+		if (a)
+			tag = "PlayerTile";
+		else
+			tag = "Tile";
 	}
 
 }

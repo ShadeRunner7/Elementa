@@ -1,0 +1,35 @@
+Mapgenerator
+	Complete
+		Grid generating 
+		Heightmap generating
+		Basic tiles
+		Multiple characters generate map
+	To-Do
+		Advanced tiles
+		Less random elevation
+		Less Fire Tiles
+		Movement Point cost script
+			To Character?
+
+Character
+	Complete
+		Position finding
+	To-Do
+		Line of Sight -generation
+		Movement
+			Movement Point cost?
+		Actions
+			NPC
+			Enemy AI?????
+
+UI
+	Complete
+	To-Do
+		Next Turn -button
+		Character info
+			HP
+			AP
+			MP
+			"Adv." info
+				Skills
+				Stats

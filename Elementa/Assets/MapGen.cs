@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class MapGen : MonoBehaviour {
 
 	GameObject[] cList;
-	GameObject tile;
+	GameObject tile, tmp;
 	float x, y;
 	int gx = 0, gy = 0, gz = 0, cx, cy, cz, LoS;
 	string[] tiles = {
@@ -13,39 +13,41 @@ public class MapGen : MonoBehaviour {
 	};
 
 	// Use this for initialization
-	void Start () {	
-		cList =  GameObject.FindGameObjectsWithTag ("Player");
+	void Start () {
+		GenerateMap ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	}
 
+	public void GenerateMap () {	
+		cList =  GameObject.FindGameObjectsWithTag ("Player");
+//		Debug.Log ("Generating Map");
+//		int round = 0;
+		
 		foreach (GameObject character in cList) {
 			cx = character.GetComponent<Character> ().x;
 			cy = character.GetComponent<Character> ().y;
 			cz = character.GetComponent<Character> ().z;
 			LoS = character.GetComponent<Character> ().LoS + 2;
-
-			for (gx = cx - LoS; gx <= cx + LoS * 2 + 1; gx++) {
+			
+			
+			for (gx = cx - LoS; gx <= cx + LoS; gx++) {
 				gy = -gx / 2 - (cy + LoS);
-				gz = -(gx + 1) / 2 + (cy + LoS);
-				for (; gy <= cy + LoS; gy++) {				
-					x = gx * .75f;
-					if (x < 0) {
-						y = (gy - gz) * .45f + .45f;
-						if (Distance (cx, cy, cz, gx, gy + 1, gz) <= LoS) {
-							TileGenerator (x, y, gx, gy, gz);
-							}
-					} else {
+				gz = -(gx + 1) / 2 + (cy + LoS);			
+				x = gx * .75f;
+				for (; gy <= cy + LoS; gy++) {
+					if (x >= 0) {
 						y = (gy - gz) * .45f;
-						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS) {
+						tmp = GameObject.Find (gx + "," + gy + "," + gz);
+						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS && !tmp)
 							TileGenerator (x, y, gx, gy, gz);
-						}
-					}
+					} 
 					gz--;
 				}
 			}
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
 	}
 
 	void TileGenerator(float x, float y, int gx, int gy, int gz) {
@@ -126,7 +128,7 @@ public class MapGen : MonoBehaviour {
 		}
 	}
 
-	int Distance (int x0, int y0, int z0, int x1, int y1, int z1) {
+	public int Distance (int x0, int y0, int z0, int x1, int y1, int z1) {
 //		return (Mathf.Abs (x0-x1) + Mathf.Abs (y0-y1) + Mathf.Abs (z0-z1)) / 2;
 		return Mathf.Max (Mathf.Abs (x0 - x1), Mathf.Abs (y0 - y1), Mathf.Abs (z0 - z1));
 	}

@@ -11,6 +11,10 @@ public class HMapGen : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {	
+		GenerateMap ();
+	}
+
+	public void GenerateMap() {
 		GameObject[] tmp = GameObject.FindGameObjectsWithTag ("Tile");
 		foreach (GameObject i in tmp) {
 			x = i.GetComponent<Tile> ().x;
@@ -65,24 +69,22 @@ public class HMapGen : MonoBehaviour {
 		}
 	}
 
-	void Diff(int oEle, int oW, int a, bool negX) {
-		if (negX) {
-			if ((elevation - oEle < 150 && elevation - oEle >= 100) || ((oW >= (Mathf.FloorToInt (elevation / 2)) && elevation >= 100))) {
-				hTile = Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f + .45f, 0), transform.rotation) as GameObject;
-			} else if (elevation - oEle <= -50 && elevation - oEle > -100) {
-				hTile = Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f + .45f, 0), transform.rotation) as GameObject;
-			} else if (elevation - oEle <= -100) {
-				hTile = Instantiate (Resources.Load ("HTiles/H-100Tile" + a), new Vector3 (x * .75f, (y - z) * .45f + .45f, 0), transform.rotation) as GameObject;
-			}
-		} else {
-			if ((elevation - oEle < 150 && elevation - oEle >= 100) || ((oW >= (Mathf.FloorToInt (elevation / 2)) && elevation >= 100))) {
+	public void Diff(int oEle, int oW, int a, bool negX) {
+		if (!negX) {
+			if ((elevation - oEle < 150 && elevation - oEle >= 100) || ((oW >= (Mathf.FloorToInt (elevation / 2)) && elevation >= 100)))
 				hTile = Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation) as GameObject;
-			} else if (elevation - oEle <= -50 && elevation - oEle > -100) {
+			else if (elevation - oEle <= -50 && elevation - oEle > -100)
 				hTile = Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation) as GameObject;
-			} else if (elevation - oEle <= -100) {
+			else if (elevation - oEle <= -100)
 				hTile = Instantiate (Resources.Load ("HTiles/H-100Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation) as GameObject;
-			}
-		}
+		} /*else {
+			if ((elevation - oEle < 150 && elevation - oEle >= 100) || ((oW >= (Mathf.FloorToInt (elevation / 2)) && elevation >= 100)))
+				hTile = Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f + .45f, 0), transform.rotation) as GameObject;
+			else if (elevation - oEle <= -50 && elevation - oEle > -100)
+				hTile = Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f + .45f, 0), transform.rotation) as GameObject;
+			else if (elevation - oEle <= -100)
+				hTile = Instantiate (Resources.Load ("HTiles/H-100Tile" + a), new Vector3 (x * .75f, (y - z) * .45f + .45f, 0), transform.rotation) as GameObject;
+		}*/
 	}
 
 	
