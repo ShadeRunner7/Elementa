@@ -2,10 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class UnlimitedButtonWorks : MonoBehaviour {
+public class UnlimitedButtonWorks : Unarou {
 
 	Text buttonT, MP, AP;
-	GameObject[] players;
 	GameObject cam;
 	int k;
 	Button test;
@@ -19,7 +18,7 @@ public class UnlimitedButtonWorks : MonoBehaviour {
 			MP = transform.FindChild ("MPText").GetComponent<Text> ();
 			AP = transform.FindChild ("APText").GetComponent<Text> ();
 			cam = GameObject.Find ("Main Camera");
-			selectChar();
+			SelectChar();
 		}
 	}
 	
@@ -27,23 +26,22 @@ public class UnlimitedButtonWorks : MonoBehaviour {
 	void Update () {
 	}
 
-	public void testi(){
+	public void Testi(){
 		Debug.Log (name);
 	}
 
-	public void selectChar () {
-		players = GameObject.FindGameObjectsWithTag ("Player");
-		if (k == players.Length)
+	public void SelectChar () {
+		if (k == CharacterList.Length)
 			k = 0;
-		buttonT.text = players [k].GetComponent<Character> ().name;
-		MP.text = players [k].GetComponent<Character> ().MP.ToString ();
-		AP.text = players [k].GetComponent<Character> ().AP.ToString ();
-		cam.SendMessage ("SetTarget", players [k], SendMessageOptions.DontRequireReceiver);
+		buttonT.text = CharacterList [k].GetComponent<Character> ().name;
+		MP.text = CharacterList [k].GetComponent<Character> ().MP.ToString ();
+		AP.text = CharacterList [k].GetComponent<Character> ().AP.ToString ();
+		cam.SendMessage ("SetTarget", CharacterList [k], SendMessageOptions.DontRequireReceiver);
 		k++;
 	}
 
 	public void MoveChar () {
-		players [k].SendMessage ("position", SendMessageOptions.DontRequireReceiver);
-		players [k].SendMessage ("FoW", SendMessageOptions.DontRequireReceiver);
+		CharacterList [k].SendMessageUpwards ("Position", SendMessageOptions.DontRequireReceiver);
+		CharacterList [k].SendMessageUpwards ("FoW", SendMessageOptions.DontRequireReceiver);
 	}
 }

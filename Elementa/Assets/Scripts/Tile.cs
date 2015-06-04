@@ -1,15 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
-public class Tile : MonoBehaviour {
+public class Tile : Unarou {
 
-	public int x, y, z,
-			   wood, fire, ground, metal, water,
-			   elevation;
-	public int visionLevel = 0;
+	internal int wood, fire, ground, metal, water;	
+	public int elevation, x, y, z;
+	internal int visionLevel = 0;
 	
-	public GameObject adj0, adj1, adj2, adj3, adj4, adj5;
-	Character player;
+	internal GameObject adj0, adj1, adj2, adj3, adj4, adj5;
 
 	// Use this for initialization
 	void Start () {		
@@ -23,19 +21,13 @@ public class Tile : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (visionLevel == 0)
+		if (visionLevel == 0) {
 			GetComponent<SpriteRenderer> ().color = Color.black;
-		else if (visionLevel == 1)
+		} else if (visionLevel == 1) {
 			GetComponent<SpriteRenderer> ().color = Color.grey;
-		else if (visionLevel == 2)
+		} else if (visionLevel == 2) {
 			GetComponent<SpriteRenderer> ().color = Color.white;
-	}
-
-	public void PlayerTile(bool a) {
-		if (a)
-			tag = "PlayerTile";
-		else
-			tag = "Tile";
+		}
 	}
 
 }

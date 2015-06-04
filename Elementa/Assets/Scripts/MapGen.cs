@@ -2,9 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class MapGen : MonoBehaviour {
+public class MapGen : Unarou {
 
-	GameObject[] cList;
 	GameObject tile, tmp;
 	float x, y;
 	int gx = 0, gy = 0, gz = 0, cx, cy, cz, LoS;
@@ -14,19 +13,14 @@ public class MapGen : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		GenerateMap ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	}
 
-	public void GenerateMap () {	
-		cList =  GameObject.FindGameObjectsWithTag ("Player");
-//		Debug.Log ("Generating Map");
-//		int round = 0;
-		
-		foreach (GameObject character in cList) {
+	internal void GenerateMap () {		
+		foreach (GameObject character in CharacterList) {
 			cx = character.GetComponent<Character> ().x;
 			cy = character.GetComponent<Character> ().y;
 			cz = character.GetComponent<Character> ().z;
@@ -47,7 +41,6 @@ public class MapGen : MonoBehaviour {
 					gz--;
 				}
 			}
-			character.SendMessageUpwards ("Fow", SendMessageOptions.DontRequireReceiver); 	
 		}
 	}
 
@@ -127,9 +120,5 @@ public class MapGen : MonoBehaviour {
 			tmp.name = gx + "," + gy + "," + gz;
 			tmp.elevation = tmp.ground + Mathf.FloorToInt (tmp.metal / 2) - 400 + tmp.water;
 		}
-	}
-
-	int Distance (int x0, int y0, int z0, int x1, int y1, int z1) {
-		return Mathf.Max (Mathf.Abs (x0 - x1), Mathf.Abs (y0 - y1), Mathf.Abs (z0 - z1));
 	}
 }

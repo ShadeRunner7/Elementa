@@ -1,8 +1,8 @@
 Attributes
 	Utility
-		Cast range up +.1
-		Movement Point up +.2
-		Line of sight up +.1
+		Cast range up +.2
+		Movement Point up +.3
+		Line of sight up +.2
 		Actions per turn +.2
 		Pro-Power +1%
 
@@ -22,10 +22,10 @@ Attributes
 	Cast Area must be within Line of sight and Cast range
 
 	Basics:
-		Cast Range:		3
-		Movement Points:	2
-		Line of Sight:		4
-		Actions per turn:	2
+		Cast Range:		1
+		Movement Points:	1
+		Line of Sight:		2
+		Actions per turn:	1
 		Pro-Power:		0
 		Cast Area:		1
 		Power:			10

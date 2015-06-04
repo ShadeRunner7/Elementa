@@ -2,30 +2,27 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class HMapGen : MonoBehaviour {
+public class HMapGen : Unarou {
 	
-	public GameObject adj0, adj1, adj2, adj3, adj4, adj5;
+	GameObject adj0, adj1, adj2, adj3, adj4, adj5;
 	GameObject hTile;
 
 	int x, y, z, elevation;
 
 	// Use this for initialization
 	void Start () {	
-		GenerateMap ();
 	}
 
-	public void GenerateMap() {
-		GameObject[] tmp = GameObject.FindGameObjectsWithTag ("Tile");
-		foreach (GameObject i in tmp) {
+	internal void GenerateHMap() {
+		foreach (GameObject i in TileList) {
 			x = i.GetComponent<Tile> ().x;
 			y = i.GetComponent<Tile> ().y;
 			z = i.GetComponent<Tile> ().z;
-//			Debug.Log (i);
 			ElevationDiff(i);
 		}
 	}
 
-	public void ElevationDiff(GameObject a) {
+	void ElevationDiff(GameObject a) {
 		elevation = a.GetComponent<Tile> ().elevation;
 		
 		adj0 = GameObject.Find (x + "," + (y + 1) + "," + (z - 1));	
@@ -69,7 +66,7 @@ public class HMapGen : MonoBehaviour {
 		}
 	}
 
-	public void Diff(int oEle, int oW, int a, bool negX) {
+	void Diff(int oEle, int oW, int a, bool negX) {
 		if (!negX) {
 			if ((elevation - oEle < 150 && elevation - oEle >= 100) || ((oW >= (Mathf.FloorToInt (elevation / 2)) && elevation >= 100)))
 				hTile = Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation) as GameObject;
@@ -77,14 +74,7 @@ public class HMapGen : MonoBehaviour {
 				hTile = Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation) as GameObject;
 			else if (elevation - oEle <= -100)
 				hTile = Instantiate (Resources.Load ("HTiles/H-100Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation) as GameObject;
-		} /*else {
-			if ((elevation - oEle < 150 && elevation - oEle >= 100) || ((oW >= (Mathf.FloorToInt (elevation / 2)) && elevation >= 100)))
-				hTile = Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f + .45f, 0), transform.rotation) as GameObject;
-			else if (elevation - oEle <= -50 && elevation - oEle > -100)
-				hTile = Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f + .45f, 0), transform.rotation) as GameObject;
-			else if (elevation - oEle <= -100)
-				hTile = Instantiate (Resources.Load ("HTiles/H-100Tile" + a), new Vector3 (x * .75f, (y - z) * .45f + .45f, 0), transform.rotation) as GameObject;
-		}*/
+		}
 	}
 	
 	// Update is called once per frame
