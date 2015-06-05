@@ -5,6 +5,9 @@ public class Character : Unarou {
 	
 	public int x, y, z;
 	public int LoS, MP, AP;
+	public int MaxMP, MaxAP, Level, EXP;
+	public int UtilityLvl = 0, PowerLvl = 0, DefenseLvl = 0;
+	public int levelpoints;
 	int oEle, ele, gx, gy, gz, d;
 	GameObject tmp;
 
@@ -19,14 +22,13 @@ public class Character : Unarou {
 	internal void FoW () { //Fog of War
 		ele = GameObject.Find (x + "," + y + "," + z).GetComponent<Tile> ().elevation;
 
-		for (gx = x - LoS; gx <= x + LoS + MP; gx++) {
-			gy = -gx / 2 - (y + LoS + MP);
-			gz = -(gx + 1) / 2 + (y + LoS + MP);
-			for (; gy <= y + LoS + MP; gy++) {
+		for (gx = x - LoS; gx <= x + LoS * 2 + MP; gx++) {
+			gy = -gx / 2 - (y + LoS * 2 + MP);
+			gz = -(gx + 1) / 2 + (y + LoS * 2 + MP);
+			for (; gy <= y + LoS * 2 + MP; gy++) {
 				tmp = GameObject.Find (gx + "," + gy + "," + gz);
 				d = Distance(x, y, z, gx, gy, gz);
-				if (tmp) Debug.Log(tmp + " " + tmp.CompareTag("FoWTile"));
-				if (x >= 0 && tmp && tmp.CompareTag("FoWTile")) {
+				if (x >= 0 && tmp && !tmp.GetComponent<Tile>().OnLoS) {
 					oEle = tmp.GetComponent<Tile>().elevation;
 					Visual();
 				}
@@ -34,20 +36,31 @@ public class Character : Unarou {
 			}
 		}
 	}
-	
+
+
 	void Visual() {
-		if ((oEle - ele >= 200 + 50 * (Mathf.Max (LoS, 4) - 4) && oEle - ele <= -200 - 50 * (Mathf.Max (LoS, 4) - 4)) || d > LoS)
+		bool plus200andOver = oEle - ele >= 200 + 50 * (Mathf.Max (LoS, 4) - 4);
+		bool lessPlus200 = oEle - ele < 200 + 50 * (Mathf.Max (LoS, 4) - 4);
+		bool plus50andOver = oEle - ele >= 50;
+		bool lessPlus50 = oEle - ele < 50;
+		bool moreMinus200 = oEle - ele > -200 - 50 * (Mathf.Max (LoS, 4) - 4);
+		bool minus200andUnder = oEle - ele <= -200 - 50 * (Mathf.Max (LoS, 4) - 4);
+		bool Seen2 = tmp.GetComponent<Tile> ().visionLevel == 2;
+		bool Seen1 = tmp.GetComponent<Tile> ().visionLevel == 1;
+
+		if ((plus200andOver || minus200andUnder || d > LoS) && !Seen2 && !Seen1)
 			tmp.GetComponent<Tile> ().visionLevel = 0;
-		else if (oEle - ele < 200 + 50 * (Mathf.Max (LoS, 4) - 4) && oEle - ele >= 50) {
+		else if (lessPlus200 && plus50andOver || (d > LoS && !Seen2)) {
 			tmp.GetComponent<Tile> ().visionLevel = 1;
-			tmp.tag = "VisibleTile";
-		} else if (oEle - ele < 50 && oEle - ele > -200 - 50 * (Mathf.Max (LoS, 6) - 6) && d <= LoS) {
+			Seen1 = true;
+		} else if (lessPlus50 && moreMinus200 && d <= LoS) {
 			tmp.GetComponent<Tile> ().visionLevel = 2;
-			tmp.tag = "ClearTile";
+			Seen2 = true;
 		}
 	}
 
 	internal void Position() {
+
 		x = Mathf.RoundToInt(transform.position.x / .75f);
 		y = (int)(transform.position.y / .9f) - x / 2;
 		z = -(x + y);

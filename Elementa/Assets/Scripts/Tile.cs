@@ -6,6 +6,7 @@ public class Tile : Unarou {
 	internal int wood, fire, ground, metal, water;	
 	public int elevation, x, y, z;
 	internal int visionLevel = 0;
+	internal bool OnLoS = false;
 	
 	internal GameObject adj0, adj1, adj2, adj3, adj4, adj5;
 
@@ -30,4 +31,22 @@ public class Tile : Unarou {
 		}
 	}
 
+	void OnMouseUp() {
+		if (Moving && 
+		    SelectedChar.GetComponent<Character> ().MP != 0 && 
+		    SelectedChar.GetComponent<Character> ().AP != 0 && 
+		    Distance (selected.x, selected.y, selected.z, x, y, z) <= selected.MP) 
+		{
+			SelectedChar.transform.position = transform.position;
+			selected.MP -= Distance (selected.x, selected.y, selected.z, x, y, z);
+			selected.AP--;
+			selected.Position ();
+			MapGeneration ();
+			selected.FoW ();
+			SelectedChar.GetComponent<Skills> ().AddExp ();
+			GameObject.Find ("Canvas/PlayerB").GetComponent<UnlimitedButtonWorks> ().ChangeTexts ();
+		}
+		if (Distance (selected.x, selected.y, selected.z, x, y, z) <= selected.MP)
+			Moving = false;
+	}
 }

@@ -1,9 +1,9 @@
 Attributes
 	Utility
 		Cast range up +.2
-		Movement Point up +.3
+		Movement Point up +.2
 		Line of sight up +.2
-		Actions per turn +.2
+		Actions per turn +.15
 		Pro-Power +1%
 
 	Power

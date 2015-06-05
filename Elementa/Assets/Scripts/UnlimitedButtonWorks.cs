@@ -4,11 +4,10 @@ using UnityEngine.UI;
 
 public class UnlimitedButtonWorks : Unarou {
 
-	Text buttonT, MP, AP;
+	static Text buttonT, MP, AP;
 	GameObject cam;
 	int k;
 	Button test;
-
 
 	// Use this for initialization
 	void Start () {
@@ -30,18 +29,34 @@ public class UnlimitedButtonWorks : Unarou {
 		Debug.Log (name);
 	}
 
+	internal void ChangeTexts() {		
+		MP.text = selected.MP.ToString ();
+		AP.text = selected.GetComponent<Character> ().AP.ToString ();
+	}
+
 	public void SelectChar () {
+		Moving = false;
 		if (k == CharacterList.Length)
 			k = 0;
-		buttonT.text = CharacterList [k].GetComponent<Character> ().name;
-		MP.text = CharacterList [k].GetComponent<Character> ().MP.ToString ();
-		AP.text = CharacterList [k].GetComponent<Character> ().AP.ToString ();
-		cam.SendMessage ("SetTarget", CharacterList [k], SendMessageOptions.DontRequireReceiver);
+		SelectedChar = CharacterList[k];
+		selected = SelectedChar.GetComponent<Character> ();
+		ChangeTexts ();
+		buttonT.text = selected.name;
+		cam.SendMessage ("SetTarget", SelectedChar, SendMessageOptions.DontRequireReceiver);
 		k++;
 	}
 
 	public void MoveChar () {
-		CharacterList [k].SendMessageUpwards ("Position", SendMessageOptions.DontRequireReceiver);
-		CharacterList [k].SendMessageUpwards ("FoW", SendMessageOptions.DontRequireReceiver);
+		if (!Moving)
+			Moving = true;
+	}
+
+	public void EndTurn () {
+		Moving = false;
+		foreach (GameObject character in CharacterList) {
+			character.GetComponent<Character>().MP = character.GetComponent<Character>().MaxMP;
+			character.GetComponent<Character>().AP = character.GetComponent<Character>().MaxAP;
+		}
+		ChangeTexts ();
 	}
 }
