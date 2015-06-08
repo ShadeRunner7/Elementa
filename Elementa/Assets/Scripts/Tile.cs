@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Tile : Unarou {
 
@@ -8,16 +9,40 @@ public class Tile : Unarou {
 	internal int visionLevel = 0;
 	internal bool OnLoS = false;
 	
-	internal GameObject adj0, adj1, adj2, adj3, adj4, adj5;
+	public GameObject adj0, adj1, adj2, adj3, adj4, adj5;
+	public GameObject adjH0, adjH1, adjH2, adjH3, adjH4, adjH5;
 
 	// Use this for initialization
 	void Start () {		
-		adj0 = GameObject.Find (x + "," + (y + 1) + "," + (z - 1));	
-		adj1 = GameObject.Find ((x + 1) + "," + y + "," + (z - 1));	
-		adj2 = GameObject.Find ((x + 1) + "," + (y - 1) + "," + z);	
-		adj3 = GameObject.Find (x + "," + (y - 1) + "," + (z + 1));	
-		adj4 = GameObject.Find ((x - 1) + "," + y + "," + (z + 1));	
-		adj5 = GameObject.Find ((x - 1) + "," + (y + 1) + "," + z);
+	}
+
+	internal void SetUp (){		
+		if (!adj0) adj0 = GameObject.Find (x + "," + (y + 1) + "," + (z - 1));
+		if (!adj1) adj1 = GameObject.Find ((x + 1) + "," + y + "," + (z - 1));	
+		if (!adj2) adj2 = GameObject.Find ((x + 1) + "," + (y - 1) + "," + z);	
+		if (!adj3) adj3 = GameObject.Find (x + "," + (y - 1) + "," + (z + 1));	
+		if (!adj4) adj4 = GameObject.Find ((x - 1) + "," + y + "," + (z + 1));	
+		if (!adj5) adj5 = GameObject.Find ((x - 1) + "," + (y + 1) + "," + z);
+
+		if (!adjH0) adjH0 = GameObject.Find (x + "," + y + "," + z + ".0");	
+		if (!adjH1) adjH1 = GameObject.Find (x + "," + y + "," + z + ".1");	
+		if (!adjH2) adjH2 = GameObject.Find (x + "," + y + "," + z + ".2");	
+		if (!adjH3) adjH3 = GameObject.Find (x + "," + y + "," + z + ".3");	
+		if (!adjH4) adjH4 = GameObject.Find (x + "," + y + "," + z + ".4");	
+		if (!adjH5) adjH5 = GameObject.Find (x + "," + y + "," + z + ".5");
+		
+		GetComponent<HMapGen> ().x = x;
+		GetComponent<HMapGen> ().y = y;
+		GetComponent<HMapGen> ().z = z;
+		GetComponent<HMapGen> ().elevation = elevation;
+		GetComponent<HMapGen> ().adj0 = adj0;
+		GetComponent<HMapGen> ().adj1 = adj1;
+		GetComponent<HMapGen> ().adj2 = adj2;
+		GetComponent<HMapGen> ().adj3 = adj3;
+		GetComponent<HMapGen> ().adj4 = adj4;
+		GetComponent<HMapGen> ().adj5 = adj5;
+
+		ElevationDiff ();
 	}
 
 	// Update is called once per frame
@@ -31,22 +56,70 @@ public class Tile : Unarou {
 		}
 	}
 
+	void ElevationDiff() {		
+		List<Tile> adje = new List<Tile> ();
+		if (adj0) adje.Add (adj0.GetComponent<Tile> ());
+		else adje.Add (null);
+		if (adj1) adje.Add (adj1.GetComponent<Tile> ());
+		else adje.Add (null);
+		if (adj2) adje.Add (adj2.GetComponent<Tile> ());
+		else adje.Add (null);
+		if (adj3) adje.Add (adj3.GetComponent<Tile> ());
+		else adje.Add (null);
+		if (adj4) adje.Add (adj4.GetComponent<Tile> ());
+		else adje.Add (null);
+		if (adj5) adje.Add (adj5.GetComponent<Tile> ());
+		else adje.Add (null);
+		
+		List<GameObject> adjeH = new List<GameObject> ();		
+		if (adjH0) adjeH.Add (adjH0);
+		else adjeH.Add (null);
+		if (adjH1) adjeH.Add (adjH1);
+		else adjeH.Add (null);
+		if (adjH2) adjeH.Add (adjH2);
+		else adjeH.Add (null);
+		if (adjH3) adjeH.Add (adjH3);
+		else adjeH.Add (null);
+		if (adjH4) adjeH.Add (adjH4);
+		else adjeH.Add (null);
+		if (adjH5) adjeH.Add (adjH5);
+		else adjeH.Add (null);
+		
+		for (int c = 0; c < adje.Count; c++) {
+			if(adje[c] && !adjeH[c])	{
+				Diff(adje[c].elevation, adje[c].water, c);
+			}
+		}
+	}
+
+	void Diff(int oEle, int oW, int a) {
+		if ((elevation - oEle < 150 && elevation - oEle >= 100) || ((oW >= (Mathf.FloorToInt (elevation / 2)) && elevation >= 100)))
+			Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = x + "," + y + "," + z + "." + a;
+		else if (elevation - oEle <= -50 && elevation - oEle > -100)
+			Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = x + "," + y + "," + z + "." + a;
+		else if (elevation - oEle <= -100)
+			Instantiate (Resources.Load ("HTiles/H-100Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = x + "," + y + "," + z + "." + a;
+	}
+
 	void OnMouseUp() {
 		if (Moving && 
-		    SelectedChar.GetComponent<Character> ().MP != 0 && 
-		    SelectedChar.GetComponent<Character> ().AP != 0 && 
+		    selected.MP != 0 && 
+		    selected.AP != 0 && 
 		    Distance (selected.x, selected.y, selected.z, x, y, z) <= selected.MP) 
 		{
 			SelectedChar.transform.position = transform.position;
 			selected.MP -= Distance (selected.x, selected.y, selected.z, x, y, z);
-			selected.AP--;
+			if (selected.MP == 0)
+				selected.AP--;
 			selected.Position ();
 			MapGeneration ();
 			selected.FoW ();
 			SelectedChar.GetComponent<Skills> ().AddExp ();
 			GameObject.Find ("Canvas/PlayerB").GetComponent<UnlimitedButtonWorks> ().ChangeTexts ();
 		}
-		if (Distance (selected.x, selected.y, selected.z, x, y, z) <= selected.MP)
+		if (!Moving && selected.MP != 0 && selected.MaxMP != selected.MP)
+			selected.AP--;
+		if (Distance (selected.x, selected.y, selected.z, x, y, z) <= selected.MP || selected.MP == 0)
 			Moving = false;
 	}
 }

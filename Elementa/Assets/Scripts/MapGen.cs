@@ -32,8 +32,8 @@ public class MapGen : Unarou {
 				gz = -(gx + 1) / 2 + (cy + LoS);			
 				x = gx * .75f;
 				for (; gy <= cy + LoS; gy++) {
-					if (x >= 0) {
-						y = (gy - gz) * .45f;
+					y = (gy - gz) * .45f;
+					if (x >= 0 && y >= 0) {
 						tmp = GameObject.Find (gx + "," + gy + "," + gz);
 						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS && !tmp)
 							TileGenerator (x, y, gx, gy, gz);
