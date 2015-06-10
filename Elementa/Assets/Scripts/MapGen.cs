@@ -21,23 +21,27 @@ public class MapGen : Unarou {
 
 	internal void GenerateMap () {		
 		foreach (GameObject character in CharacterList) {
-			cx = character.GetComponent<Character> ().x;
-			cy = character.GetComponent<Character> ().y;
-			cz = character.GetComponent<Character> ().z;
-			LoS = character.GetComponent<Character> ().LoS + 2;
+//			cx = character.GetComponent<Character> ().x;
+//			cy = character.GetComponent<Character> ().y;
+//			cz = character.GetComponent<Character> ().z;
+//			LoS = character.GetComponent<Character> ().LoS + 2;
 			
 			
-			for (gx = cx - LoS; gx <= cx + LoS; gx++) {
-				gy = -gx / 2 - (cy + LoS);
-				gz = -(gx + 1) / 2 + (cy + LoS);			
+//			for (gx = cx - LoS; gx <= cx + LoS; gx++) {
+			for (gx = 0; gx < 500; gx++) {
+//				gy = -gx / 2 - (cy + LoS);
+				gy = -gx / 2;
+//				gz = -(gx + 1) / 2 + (cy + LoS);
+				gz = -(gx + 1) / 2;
 				x = gx * .75f;
-				for (; gy <= cy + LoS; gy++) {
+//				for (; gy <= cy + LoS; gy++) {
+				for (; gy < 500; gy++) {
 					y = (gy - gz) * .45f;
-					if (x >= 0 && y >= 0) {
-						tmp = GameObject.Find (gx + "," + gy + "," + gz);
-						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS && !tmp)
+//					if (x >= 0 && y >= 0) {
+//						tmp = GameObject.Find (gx + "," + gy + "," + gz);
+//						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS && !tmp)
 							TileGenerator (x, y, gx, gy, gz);
-					} 
+//					}
 					gz--;
 				}
 			}

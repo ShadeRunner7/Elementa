@@ -43,10 +43,8 @@ public class Unarou : MonoBehaviour {
 	protected void MapGeneration () {		
 		MapGene.GetComponent<MapGen> ().GenerateMap ();
 		TileList = GameObject.FindGameObjectsWithTag ("Tile");
-		int k = 0;
-		foreach (GameObject MapTile in TileList) k++;
-		Debug.Log(k);
-		foreach (GameObject MapTile in TileList)
+		Debug.Log (TileList.Length);
+		foreach (GameObject MapTile in TileList) 
 			MapTile.GetComponent <Tile> ().SetUp ();
 	}
 

@@ -60,9 +60,8 @@ public class Character : Unarou {
 	}
 
 	internal void Position() {
-
-		x = Mathf.RoundToInt(transform.position.x / .75f);
-		y = (int)(transform.position.y / .9f) - x / 2;
+		x = (int)(transform.position.x / .75f);
+		y = (int)(transform.position.y / .9f - (x / 2));
 		z = -(x + y);
 	}
 }

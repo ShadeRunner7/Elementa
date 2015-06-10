@@ -30,17 +30,6 @@ public class Tile : Unarou {
 		if (!adjH3) adjH3 = GameObject.Find (x + "," + y + "," + z + ".3");	
 		if (!adjH4) adjH4 = GameObject.Find (x + "," + y + "," + z + ".4");	
 		if (!adjH5) adjH5 = GameObject.Find (x + "," + y + "," + z + ".5");
-		
-		GetComponent<HMapGen> ().x = x;
-		GetComponent<HMapGen> ().y = y;
-		GetComponent<HMapGen> ().z = z;
-		GetComponent<HMapGen> ().elevation = elevation;
-		GetComponent<HMapGen> ().adj0 = adj0;
-		GetComponent<HMapGen> ().adj1 = adj1;
-		GetComponent<HMapGen> ().adj2 = adj2;
-		GetComponent<HMapGen> ().adj3 = adj3;
-		GetComponent<HMapGen> ().adj4 = adj4;
-		GetComponent<HMapGen> ().adj5 = adj5;
 
 		ElevationDiff ();
 	}
@@ -103,23 +92,25 @@ public class Tile : Unarou {
 
 	void OnMouseUp() {
 		if (Moving && 
-		    selected.MP != 0 && 
-		    selected.AP != 0 && 
-		    Distance (selected.x, selected.y, selected.z, x, y, z) <= selected.MP) 
+		    selected.MP > 0 && 
+		    selected.AP > 0 && 
+		    Distance (selected.x, selected.y, selected.z, x, y, z) == 1) 
 		{
 			SelectedChar.transform.position = transform.position;
-			selected.MP -= Distance (selected.x, selected.y, selected.z, x, y, z);
+
+			selected.x = x;
+			selected.y = y;
+			selected.z = z;
+
+			selected.MP--;
 			if (selected.MP == 0)
 				selected.AP--;
-			selected.Position ();
-			MapGeneration ();
+			if (selected.MP == 0)
+				Moving = false;
+//			MapGeneration ();
 			selected.FoW ();
 			SelectedChar.GetComponent<Skills> ().AddExp ();
 			GameObject.Find ("Canvas/PlayerB").GetComponent<UnlimitedButtonWorks> ().ChangeTexts ();
 		}
-		if (!Moving && selected.MP != 0 && selected.MaxMP != selected.MP)
-			selected.AP--;
-		if (Distance (selected.x, selected.y, selected.z, x, y, z) <= selected.MP || selected.MP == 0)
-			Moving = false;
 	}
 }

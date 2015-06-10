@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
 public class UnlimitedButtonWorks : Unarou {
 
 	static Text buttonT, MP, AP;
-	GameObject cam;
+	static GameObject cam, me0, me1, me2;
 	int k;
 	Button test;
 
@@ -19,10 +19,16 @@ public class UnlimitedButtonWorks : Unarou {
 			cam = GameObject.Find ("Main Camera");
 			SelectChar();
 		}
+
+		me0 = GameObject.Find ("Canvas/UtilityB");
+		me1 = GameObject.Find ("Canvas/PowerB");
+		me2 = GameObject.Find ("Canvas/DefenseB");
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (Moving)
+			GameObject.Find ("Canvas/MoveB").GetComponent<Button> ().IsActive ();
 	}
 
 	public void Testi(){
@@ -31,32 +37,62 @@ public class UnlimitedButtonWorks : Unarou {
 
 	internal void ChangeTexts() {		
 		MP.text = selected.MP.ToString ();
-		AP.text = selected.GetComponent<Character> ().AP.ToString ();
+		AP.text = selected.AP.ToString ();
 	}
 
 	public void SelectChar () {
-		Moving = false;
+		if (Moving) {
+			Moving = false;
+			selected.AP--;
+		}
 		if (k == CharacterList.Length)
 			k = 0;
 		SelectedChar = CharacterList[k];
 		selected = SelectedChar.GetComponent<Character> ();
 		ChangeTexts ();
 		buttonT.text = selected.name;
-		cam.SendMessage ("SetTarget", SelectedChar, SendMessageOptions.DontRequireReceiver);
+		cam.SendMessageUpwards ("SetTarget", SelectedChar, SendMessageOptions.DontRequireReceiver);
+		
+		if (selected.levelpoints > 0) {
+			me0.SetActive (true);
+			me1.SetActive (true);
+			me2.SetActive (true);
+		}
+
 		k++;
 	}
 
 	public void MoveChar () {
 		if (!Moving)
 			Moving = true;
+	}	
+	
+	public void AddLevel () {
+		if (selected.levelpoints != 0) {
+			if (name == "UtilityB")
+				selected.UtilityLvl++;
+			if (name == "PowerB")
+				selected.PowerLvl++;
+			if (name == "DefenseB")
+				selected.DefenseLvl++;
+			selected.levelpoints--;
+			if (selected.levelpoints == 0 ){
+				me0.SetActive (false);
+				me1.SetActive (false);
+				me2.SetActive (false);
+			}
+		}
 	}
 
 	public void EndTurn () {
 		Moving = false;
-		foreach (GameObject character in CharacterList) {
-			character.GetComponent<Character>().MP = character.GetComponent<Character>().MaxMP;
-			character.GetComponent<Character>().AP = character.GetComponent<Character>().MaxAP;
+		foreach (GameObject chara in CharacterList) {
+			chara.GetComponent<Character> ().MP = chara.GetComponent<Character> ().MaxMP;
+			chara.GetComponent<Character> ().AP = chara.GetComponent<Character> ().MaxAP;
 		}
 		ChangeTexts ();
+		
+		k = 0;
+		SelectChar ();
 	}
 }
