@@ -49,6 +49,7 @@ public class UnlimitedButtonWorks : Unarou {
 			k = 0;
 		SelectedChar = CharacterList[k];
 		selected = SelectedChar.GetComponent<Character> ();
+		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
 		ChangeTexts ();
 		buttonT.text = selected.name;
 		cam.SendMessageUpwards ("SetTarget", SelectedChar, SendMessageOptions.DontRequireReceiver);
@@ -65,6 +66,8 @@ public class UnlimitedButtonWorks : Unarou {
 	public void MoveChar () {
 		if (!Moving)
 			Moving = true;
+		else
+			Moving = false;
 	}	
 	
 	public void AddLevel () {

@@ -8,12 +8,16 @@ public class Unarou : MonoBehaviour {
 	protected static GameObject SelectedChar;
 	protected static bool Moving = false;
 	protected static Character selected;
+	protected static string[] tiles = {
+		"Tiles/WoodTile", "Tiles/FireTile", "Tiles/GroundTile", "Tiles/MetalTile", "Tiles/WaterTile"
+	};
+	protected static GameObject PlayerTile;
 	static GameObject MapGene;
 
 	// Use this for initialization
 	void Start () { 
 		if (!GameObject.Find ("Emilia"))
-			Instantiate (Resources.Load ("Characters/Emilia"), new Vector3 (0, 0, 0), transform.rotation).name = "Emilia";
+			Instantiate (Resources.Load ("Characters/Emilia"), new Vector3 (2.25f, 2.25f, 0), transform.rotation).name = "Emilia";
 		if (!GameObject.Find ("Flora"))
 			Instantiate (Resources.Load ("Characters/Flora"), new Vector3 (0, 2.7f, 0), transform.rotation).name = "Flora";
 		CharacterList = GameObject.FindGameObjectsWithTag ("Player");
@@ -27,6 +31,9 @@ public class Unarou : MonoBehaviour {
 		MapGene.name = "MapGen";
 
 		MapGeneration ();
+
+		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
+		Debug.Log (PlayerTile.name);
 
 		foreach (GameObject character in CharacterList) 
 			character.GetComponent<Character> ().FoW ();
@@ -44,7 +51,14 @@ public class Unarou : MonoBehaviour {
 		MapGene.GetComponent<MapGen> ().GenerateMap ();
 		TileList = GameObject.FindGameObjectsWithTag ("Tile");
 		Debug.Log (TileList.Length);
-		foreach (GameObject MapTile in TileList) 
+		foreach (GameObject MapTile in TileList)
+			if ((!MapTile.GetComponent <Tile> ().adj0  || 
+			     !MapTile.GetComponent <Tile> ().adj1  || 
+			     !MapTile.GetComponent <Tile> ().adj2  || 
+			     !MapTile.GetComponent <Tile> ().adj3  ||
+			     !MapTile.GetComponent <Tile> ().adj4  ||
+			     !MapTile.GetComponent <Tile> ().adj5) &&
+			      MapTile.GetComponent <Tile> ().OnLoS > -CharacterList.Length)
 			MapTile.GetComponent <Tile> ().SetUp ();
 	}
 

@@ -7,9 +7,6 @@ public class MapGen : Unarou {
 	GameObject tile, tmp;
 	float x, y;
 	int gx = 0, gy = 0, gz = 0, cx, cy, cz, LoS;
-	string[] tiles = {
-		"Tiles/WoodTile", "Tiles/FireTile", "Tiles/GroundTile", "Tiles/MetalTile", "Tiles/WaterTile"
-	};
 
 	// Use this for initialization
 	void Start () {
@@ -21,32 +18,38 @@ public class MapGen : Unarou {
 
 	internal void GenerateMap () {		
 		foreach (GameObject character in CharacterList) {
-//			cx = character.GetComponent<Character> ().x;
-//			cy = character.GetComponent<Character> ().y;
-//			cz = character.GetComponent<Character> ().z;
-//			LoS = character.GetComponent<Character> ().LoS + 2;
+			cx = character.GetComponent<Character> ().x;
+			cy = character.GetComponent<Character> ().y;
+			cz = character.GetComponent<Character> ().z;
+			LoS = character.GetComponent<Character> ().LoS + 1;			
 			
-			
-//			for (gx = cx - LoS; gx <= cx + LoS; gx++) {
-			for (gx = 0; gx < 500; gx++) {
-//				gy = -gx / 2 - (cy + LoS);
-				gy = -gx / 2;
-//				gz = -(gx + 1) / 2 + (cy + LoS);
-				gz = -(gx + 1) / 2;
+			for (gx = cx - LoS; gx <= cx + LoS; gx++) {
+				gy = -gx / 2 - (cy + LoS);
+				gz = -(gx + 1) / 2 + (cy + LoS);
 				x = gx * .75f;
-//				for (; gy <= cy + LoS; gy++) {
-				for (; gy < 500; gy++) {
+				for (; gy <= cy + LoS; gy++) {
 					y = (gy - gz) * .45f;
-//					if (x >= 0 && y >= 0) {
-//						tmp = GameObject.Find (gx + "," + gy + "," + gz);
-//						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS && !tmp)
+					if (x >= 0 && y >= 0) {
+						tmp = GameObject.Find (gx + "," + gy + "," + gz);
+						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS && !tmp)
 							TileGenerator (x, y, gx, gy, gz);
-//					}
+					}
 					gz--;
 				}
 			}
 		}
-	}
+			
+/*		for (gx = 0; gx < 50; gx++) {				
+			gy = -gx / 2;
+			gz = -(gx + 1) / 2;
+			x = gx * .75f;
+			for (; gy < 50 - gx / 2; gy++) {
+				y = (gy - gz) * .45f;
+				TileGenerator (x, y, gx, gy, gz);
+				gz--;
+			}
+		}
+*/	}
 
 	void TileGenerator(float x, float y, int gx, int gy, int gz) {
 		int wood = Random.Range (0, 100), fire = Random.Range (0, 100), ground = Random.Range (0, 100), metal = Random.Range (0, 100), water = Random.Range (0, 100);
@@ -122,7 +125,7 @@ public class MapGen : Unarou {
 				tmp.wood = Random.Range(0, tmp.water);
 			tmp.ground = 400 - tmp.water;
 			tmp.name = gx + "," + gy + "," + gz;
-			tmp.elevation = tmp.ground + Mathf.FloorToInt (tmp.metal / 2) - 400 + tmp.water;
+			tmp.elevation = 0;
 		}
 	}
 }

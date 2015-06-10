@@ -22,13 +22,13 @@ public class Character : Unarou {
 	internal void FoW () { //Fog of War
 		ele = GameObject.Find (x + "," + y + "," + z).GetComponent<Tile> ().elevation;
 
-		for (gx = x - LoS; gx <= x + LoS * 2 + MP; gx++) {
-			gy = -gx / 2 - (y + LoS * 2 + MP);
-			gz = -(gx + 1) / 2 + (y + LoS * 2 + MP);
-			for (; gy <= y + LoS * 2 + MP; gy++) {
+		for (gx = x - LoS; gx <= x + LoS + 2; gx++) {
+			gy = -gx / 2 - (y + LoS + 2);
+			gz = -(gx + 1) / 2 + (y + LoS + 2);
+			for (; gy <= y + LoS + 2; gy++) {
 				tmp = GameObject.Find (gx + "," + gy + "," + gz);
 				d = Distance(x, y, z, gx, gy, gz);
-				if (x >= 0 && tmp && !tmp.GetComponent<Tile>().OnLoS) {
+				if (tmp && tmp.GetComponent<Tile>().OnLoS > -CharacterList.Length) {
 					oEle = tmp.GetComponent<Tile>().elevation;
 					Visual();
 				}
@@ -39,23 +39,23 @@ public class Character : Unarou {
 
 
 	void Visual() {
-		bool plus200andOver = oEle - ele >= 200 + 50 * (Mathf.Max (LoS, 4) - 4);
-		bool lessPlus200 = oEle - ele < 200 + 50 * (Mathf.Max (LoS, 4) - 4);
-		bool plus50andOver = oEle - ele >= 50;
-		bool lessPlus50 = oEle - ele < 50;
-		bool moreMinus200 = oEle - ele > -200 - 50 * (Mathf.Max (LoS, 4) - 4);
-		bool minus200andUnder = oEle - ele <= -200 - 50 * (Mathf.Max (LoS, 4) - 4);
-		bool Seen2 = tmp.GetComponent<Tile> ().visionLevel == 2;
-		bool Seen1 = tmp.GetComponent<Tile> ().visionLevel == 1;
+		bool io200p = oEle - ele >= 200 + 50 * (Mathf.Max (LoS, 4) - 4);
+		bool u200p = oEle - ele < 200 + 50 * (Mathf.Max (LoS, 4) - 4);
+		bool io50 = oEle - ele >= 50;
+		bool u50 = oEle - ele < 50;
+		bool om200m = oEle - ele > -200 - 50 * (Mathf.Max (LoS, 4) - 4);
+		bool ium200m = oEle - ele <= -200 - 50 * (Mathf.Max (LoS, 4) - 4);
+		int OnLos = tmp.GetComponent<Tile> ().OnLoS;
+		bool seen = tmp.GetComponent<Tile> ().seen;
 
-		if ((plus200andOver || minus200andUnder || d > LoS) && !Seen2 && !Seen1)
+		if ((io200p || ium200m) && !seen && d > LoS)
 			tmp.GetComponent<Tile> ().visionLevel = 0;
-		else if (lessPlus200 && plus50andOver || (d > LoS && !Seen2)) {
+		else if (u200p && io50 && d <= LoS) {
 			tmp.GetComponent<Tile> ().visionLevel = 1;
-			Seen1 = true;
-		} else if (lessPlus50 && moreMinus200 && d <= LoS) {
-			tmp.GetComponent<Tile> ().visionLevel = 2;
-			Seen2 = true;
+			tmp.GetComponent<Tile> ().seen = true;
+		} else if (u50 && om200m && d <= LoS) {
+			tmp.GetComponent<Tile> ().visionLevel = 2;			
+			tmp.GetComponent<Tile> ().seen = true;
 		}
 	}
 
