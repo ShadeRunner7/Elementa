@@ -74,7 +74,7 @@ public class Tile : Unarou {
 			} else 
 */			if (elevation - pEle >= 100 /* && seen */) {
 				GetComponent<SpriteRenderer> ().color = Color.black;
-				MPC = selected.MaxMP + Mathf.FloorToInt((elevation - 100) / 50);
+				MPC = selected.MaxMP + Mathf.CeilToInt((elevation - 100) / 50);
 			} else if (elevation - pEle < 100 && elevation - pEle >= 50)
 				MPC = Mathf.Min(2, selected.MP);
 			else if (elevation - pEle < 50 && elevation -pEle > -100)

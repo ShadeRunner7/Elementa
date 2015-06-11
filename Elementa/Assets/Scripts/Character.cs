@@ -48,7 +48,7 @@ public class Character : Unarou {
 		int OnLos = tmp.GetComponent<Tile> ().OnLoS;
 		bool seen = tmp.GetComponent<Tile> ().seen;
 
-		if ((io200p || ium200m) && !seen && d > LoS && OnLos < CharacterList.Length)
+		if ((io200p || ium200m) && !seen && d > LoS && OnLos <= CharacterList.Length)
 			tmp.GetComponent<Tile> ().visionLevel = 0;
 		else if (u200p && io50 && d <= LoS && OnLos < CharacterList.Length) {
 			tmp.GetComponent<Tile> ().visionLevel = 1;
