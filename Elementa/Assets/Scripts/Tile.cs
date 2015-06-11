@@ -59,11 +59,11 @@ public class Tile : Unarou {
 		}
 
 		if (!(NextToPlayer && Moving)) {
-			if (visionLevel == 0 && !seen) {
+			if (visionLevel == 0) {
 				GetComponent<SpriteRenderer> ().color = Color.black;
-			} else if (visionLevel == 1 || OnLoS == -CharacterList.Length) {
+			} else if (visionLevel == 1) {
 				GetComponent<SpriteRenderer> ().color = Color.grey;
-			} else if (visionLevel == 2 || name == PlayerTile.name) {
+			} else if (visionLevel == 2) {
 				GetComponent<SpriteRenderer> ().color = Color.white;
 			}
 		} else { 
@@ -73,20 +73,20 @@ public class Tile : Unarou {
 				MPC = selected.MaxMP + Mathf.FloorToInt((elevation - 100) / 50);
 			} else 
 */			if (elevation - pEle >= 100 /* && seen */) {
-				GetComponent<SpriteRenderer> ().color = Color.black;
-				MPC = selected.MaxMP + Mathf.CeilToInt((elevation - 100) / 50);
+				MPC = selected.MaxMP + Mathf.CeilToInt((elevation - pEle - 100) / 50 + 1);	//HERE
 			} else if (elevation - pEle < 100 && elevation - pEle >= 50)
-				MPC = Mathf.Min(2, selected.MP);
+				MPC = Mathf.Min(2, selected.MP);											//HERE
 			else if (elevation - pEle < 50 && elevation -pEle > -100)
-				MPC = 1;
+				MPC = 1;																	//HERE
 			else if ((elevation - pEle <= -100 && elevation - pEle > -150) || (water >= Mathf.FloorToInt(pEle / 2) && elevation - pEle < -100 && water != 0))
-				MPC = 0;
-			else MPC = selected.MP + 1;
+				MPC = 0;																	//HERE
+			else MPC = selected.MP + 1;														//HERE
 			if (MPC <= selected.MP && !HasPlayer)
 				GetComponent<SpriteRenderer> ().color = Color.green;
+			else 
+				GetComponent<SpriteRenderer> ().color = Color.black;
 
 		}
-
 
 		OnLoS = 0;
 		foreach (GameObject player in CharacterList) {
@@ -151,9 +151,7 @@ public class Tile : Unarou {
 		{
 			SelectedChar.transform.position = transform.position;
 
-			selected.x = x;
-			selected.y = y;
-			selected.z = z;
+			selected.Position(x, y, z);
 			
 			PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
 

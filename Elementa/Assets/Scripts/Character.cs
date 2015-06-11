@@ -28,9 +28,10 @@ public class Character : Unarou {
 			for (; gy <= y + LoS + 2; gy++) {
 				tmp = GameObject.Find (gx + "," + gy + "," + gz);
 				d = Distance(x, y, z, gx, gy, gz);
-				if (tmp && tmp.GetComponent<Tile>().OnLoS > -CharacterList.Length) {
+				if (tmp && d <= LoS + 1) {
 					oEle = tmp.GetComponent<Tile>().elevation;
 					Visual();
+					Debug.Log(tmp.name);
 				}
 			gz--;
 			}
@@ -45,17 +46,34 @@ public class Character : Unarou {
 		bool u50 = oEle - ele < 50;
 		bool om200m = oEle - ele > -200 - 50 * (Mathf.Max (LoS, 4) - 4);
 		bool ium200m = oEle - ele <= -200 - 50 * (Mathf.Max (LoS, 4) - 4);
-		int OnLos = tmp.GetComponent<Tile> ().OnLoS;
-		bool seen = tmp.GetComponent<Tile> ().seen;
+		Tile Vision = tmp.GetComponent<Tile> ();
+		bool isOnLoS = Vision.OnLoS > -CharacterList.Length;
 
-		if ((io200p || ium200m) && !seen && d > LoS && OnLos <= CharacterList.Length)
-			tmp.GetComponent<Tile> ().visionLevel = 0;
-		else if (u200p && io50 && d <= LoS && OnLos < CharacterList.Length) {
-			tmp.GetComponent<Tile> ().visionLevel = 1;
-			tmp.GetComponent<Tile> ().seen = true;
-		} else if (u50 && om200m && d <= LoS) {
-			tmp.GetComponent<Tile> ().visionLevel = 2;			
-			tmp.GetComponent<Tile> ().seen = true;
+		// OnLos anyones LoS?
+		// y - visionLevel
+		// 		0 - height check
+		//			-> visionLevel 1 / 2, seen
+		//		1 - height check for close one
+		//			-> visionLevel 2
+		// n - visionLevel
+		//		2 - visionLevel 1
+
+		for (int k = 0; k <= 1; k++) {
+			if (isOnLoS && Vision.visionLevel == 0) {
+				if (u200p && io50) {
+					Vision.visionLevel = 1;
+					Vision.seen = true;
+				} else if (u50 && om200m) {
+					Vision.visionLevel = 2;
+					Vision.seen = true;
+				}
+			}
+			if (isOnLoS && Vision.visionLevel == 1 && u50 && om200m)
+				Vision.visionLevel = 2;
+			if (isOnLoS && Vision.visionLevel == 2 && !(u50 && om200m))
+				Vision.visionLevel = 1;
+			if (!isOnLoS && Vision.visionLevel == 2)
+				Vision.visionLevel = 1;
 		}
 	}
 

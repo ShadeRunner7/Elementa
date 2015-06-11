@@ -6,7 +6,7 @@ public class UnlimitedButtonWorks : Unarou {
 
 	static Text buttonT, MP, AP;
 	static GameObject cam, me0, me1, me2, me3;
-	int k;
+	static int k;
 	Button test;
 
 	// Use this for initialization
@@ -110,7 +110,7 @@ public class UnlimitedButtonWorks : Unarou {
 			Character tmp = chara.GetComponent<Character> ();
 			if (tmp.MP < tmp.MaxMP) 
 				tmp.MP = tmp.MaxMP;
-			else if (tmp.MP >=tmp.MaxMP && tmp.MP <= 56) 
+			else if (tmp.MP >=tmp.MaxMP && tmp.MP <= 57) 
 				tmp.MP++;
 			tmp.AP = tmp.MaxAP;
 		}

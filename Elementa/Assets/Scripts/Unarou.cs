@@ -19,7 +19,6 @@ public class Unarou : MonoBehaviour {
 		int x = Random.Range (0, 100);
 		int y = Random.Range (-(x / 2), 100 - x / 2);
 		int z = -x - y;
-		Debug.Log (x + " " + y + " " + z);
 
 		if (!GameObject.Find ("Emilia"))
 			Instantiate (Resources.Load ("Characters/Emilia"), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = "Emilia";
@@ -28,7 +27,6 @@ public class Unarou : MonoBehaviour {
 		x += Random.Range (1, 2);
 		y += Random.Range (1, 2);
 		z = -x - y;
-		Debug.Log (x + " " + y + " " + z);
 
 		if (!GameObject.Find ("Flora"))
 			Instantiate (Resources.Load ("Characters/Flora"), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = "Flora";
