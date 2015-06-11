@@ -5,24 +5,31 @@ using UnityEngine.UI;
 public class UnlimitedButtonWorks : Unarou {
 
 	static Text buttonT, MP, AP;
-	static GameObject cam, me0, me1, me2;
+	static GameObject cam, me0, me1, me2, me3;
 	int k;
 	Button test;
 
 	// Use this for initialization
-	void Start () {
-		k = 0;
-		if (name == "PlayerB") {
+	void Start () {	
+		if (name == "PlayerB") {			
+			k = 0;
 			buttonT = transform.FindChild ("PlayerBText").GetComponent<Text> ();
 			MP = transform.FindChild ("MPText").GetComponent<Text> ();
 			AP = transform.FindChild ("APText").GetComponent<Text> ();
 			cam = GameObject.Find ("Main Camera");
-			SelectChar();
-		}
+			
+			me0 = GameObject.Find ("Canvas/UtilityB");
+			me1 = GameObject.Find ("Canvas/PowerB");
+			me2 = GameObject.Find ("Canvas/DefenseB");
+			me3 = GameObject.Find ("Canvas/LevelUpPanel");
 
-		me0 = GameObject.Find ("Canvas/UtilityB");
-		me1 = GameObject.Find ("Canvas/PowerB");
-		me2 = GameObject.Find ("Canvas/DefenseB");
+			SelectChar ();
+		} else {
+			me0 = GameObject.Find ("Canvas/UtilityB");
+			me1 = GameObject.Find ("Canvas/PowerB");
+			me2 = GameObject.Find ("Canvas/DefenseB");
+			me3 = GameObject.Find ("Canvas/LevelUpPanel");
+		}
 	}
 	
 	// Update is called once per frame
@@ -31,19 +38,19 @@ public class UnlimitedButtonWorks : Unarou {
 			GameObject.Find ("Canvas/MoveB").GetComponent<Button> ().IsActive ();
 	}
 
-	public void Testi(){
-		Debug.Log (name);
-	}
-
-	internal void ChangeTexts() {		
-		MP.text = selected.MP.ToString ();
+	internal void ChangeTexts() {
+		if (selected.MP <= selected.MaxMP)
+			MP.text = selected.MP.ToString ();
+		else
+			MP.text = selected.MaxMP + "+" + (selected.MP - selected.MaxMP);
 		AP.text = selected.AP.ToString ();
 	}
 
 	public void SelectChar () {
 		if (Moving) {
 			Moving = false;
-			selected.AP--;
+			if (selected.MP < selected.MaxMP)
+				selected.AP--;
 		}
 		if (k == CharacterList.Length)
 			k = 0;
@@ -54,21 +61,30 @@ public class UnlimitedButtonWorks : Unarou {
 		buttonT.text = selected.name;
 		cam.SendMessageUpwards ("SetTarget", SelectedChar, SendMessageOptions.DontRequireReceiver);
 		
-		if (selected.levelpoints > 0) {
+		if (selected.levelpoints > 0 && selected.MP >= selected.MaxMP && selected.AP == selected.MaxAP) {
 			me0.SetActive (true);
 			me1.SetActive (true);
 			me2.SetActive (true);
+			me3.SetActive (true);
 		}
 
 		k++;
 	}
 
 	public void MoveChar () {
-		if (!Moving)
+		if (!Moving && selected.AP > 0)
 			Moving = true;
 		else
 			Moving = false;
-	}	
+	}
+
+	public void Action () {
+		if (Moving) {
+			Moving = false;
+			if (selected.MP < selected.MaxMP)
+				selected.AP--;
+		}
+	}
 	
 	public void AddLevel () {
 		if (selected.levelpoints != 0) {
@@ -83,6 +99,7 @@ public class UnlimitedButtonWorks : Unarou {
 				me0.SetActive (false);
 				me1.SetActive (false);
 				me2.SetActive (false);
+				me3.SetActive (false);
 			}
 		}
 	}
@@ -90,8 +107,12 @@ public class UnlimitedButtonWorks : Unarou {
 	public void EndTurn () {
 		Moving = false;
 		foreach (GameObject chara in CharacterList) {
-			chara.GetComponent<Character> ().MP = chara.GetComponent<Character> ().MaxMP;
-			chara.GetComponent<Character> ().AP = chara.GetComponent<Character> ().MaxAP;
+			Character tmp = chara.GetComponent<Character> ();
+			if (tmp.MP < tmp.MaxMP) 
+				tmp.MP = tmp.MaxMP;
+			else if (tmp.MP >=tmp.MaxMP && tmp.MP <= 56) 
+				tmp.MP++;
+			tmp.AP = tmp.MaxAP;
 		}
 		ChangeTexts ();
 		

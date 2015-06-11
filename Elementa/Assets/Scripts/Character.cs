@@ -48,9 +48,9 @@ public class Character : Unarou {
 		int OnLos = tmp.GetComponent<Tile> ().OnLoS;
 		bool seen = tmp.GetComponent<Tile> ().seen;
 
-		if ((io200p || ium200m) && !seen && d > LoS)
+		if ((io200p || ium200m) && !seen && d > LoS && OnLos < CharacterList.Length)
 			tmp.GetComponent<Tile> ().visionLevel = 0;
-		else if (u200p && io50 && d <= LoS) {
+		else if (u200p && io50 && d <= LoS && OnLos < CharacterList.Length) {
 			tmp.GetComponent<Tile> ().visionLevel = 1;
 			tmp.GetComponent<Tile> ().seen = true;
 		} else if (u50 && om200m && d <= LoS) {
@@ -59,9 +59,9 @@ public class Character : Unarou {
 		}
 	}
 
-	internal void Position() {
-		x = (int)(transform.position.x / .75f);
-		y = (int)(transform.position.y / .9f - (x / 2));
-		z = -(x + y);
+	internal void Position(int ux, int uy, int uz) {
+		x = ux;
+		y = uy;
+		z = uz;
 	}
 }

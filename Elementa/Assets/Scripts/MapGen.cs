@@ -61,15 +61,15 @@ public class MapGen : Unarou {
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
+
 			tmp.wood = Random.Range(0, 1000);
-			tmp.ground = Random.Range (0, 1000);
+			tmp.ground = Random.Range (0, 400);
 			if (Random.Range (0, 5) == 5)
-				tmp.water = Random.Range (0, 400 - tmp.ground);
-			else if (tmp.ground < 400) tmp.ground += 400;
-			if (tmp.water <= 0) 
-				tmp.water = 0;
+				tmp.water = 400 - tmp.ground;
+			else if (tmp.ground < 400) tmp.ground += Random.Range (400 - tmp.ground, 1000);
+
 			tmp.name = gx + "," + gy + "," + gz;
-			tmp.elevation = tmp.ground + Mathf.FloorToInt (tmp.metal / 2) - 400 + tmp.water;
+			tmp.elevation = tmp.ground + tmp.water + Mathf.FloorToInt (tmp.metal / 2) - 400;
 		}
 		else if (leEle == fire) {
 			tile = Instantiate (Resources.Load (tiles [1]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -77,10 +77,12 @@ public class MapGen : Unarou {
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
+
 			tmp.fire = Random.Range (0, 500);
 			tmp.ground = Random.Range (400, 1000);
+
 			tmp.name = gx + "," + gy + "," + gz;
-			tmp.elevation = tmp.ground + Mathf.RoundToInt (tmp.metal / 2) - 400 + tmp.water;
+			tmp.elevation = tmp.ground + Mathf.RoundToInt (tmp.metal / 2) - 400;
 		}		
 		else if (leEle == ground) {
 			tile = Instantiate (Resources.Load (tiles [2]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -88,6 +90,7 @@ public class MapGen : Unarou {
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
+
 			tmp.ground = Random.Range(400, 1400);
 			if (Random.Range (0,20) == 20) {
 				int k = Random.Range (0, 500);
@@ -95,8 +98,9 @@ public class MapGen : Unarou {
 			}
 			if (Random.Range (0, 10) == 10)
 				tmp.wood = Random.Range (0, Mathf.RoundToInt (tmp.ground / 10));
+
 			tmp.name = gx + "," + gy + "," + gz;
-			tmp.elevation = tmp.ground + Mathf.FloorToInt (tmp.metal / 2) - 400 + tmp.water;
+			tmp.elevation = tmp.ground + Mathf.FloorToInt (tmp.metal / 2) - 400;
 		}
 		else if (leEle == metal) {
 			tile = Instantiate (Resources.Load (tiles [3]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
@@ -104,15 +108,17 @@ public class MapGen : Unarou {
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
+
 			metal = Random.Range(0, 2800);
-			if (metal > 400) tmp.metal = metal - metal % 400;
+			if (metal > 200) tmp.metal = metal - metal % 200;
 			else tmp.metal = metal;
 			if (Random.Range(0, 100) == 100)     tmp.ground = Random.Range (600, 1000);
-			else if (Random.Range (0, 20) == 20)	tmp.ground = Random.Range (300, 599);
+			else if (Random.Range (0, 20) == 20) tmp.ground = Random.Range (300, 599);
 			else if (Random.Range (0, 10) == 10) tmp.ground = Random.Range (0, 299);
 			else tmp.ground = 400; 
+
 			tmp.name = gx + "," + gy + "," + gz;
-			tmp.elevation = tmp.ground + Mathf.FloorToInt (tmp.metal / 2) - 400 + tmp.water;
+			tmp.elevation = tmp.ground + Mathf.FloorToInt (tmp.metal / 2) - 400;
 		}
 		else if (leEle == water) {
 			tile = Instantiate (Resources.Load (tiles [4]), new Vector3 (x, y, 0), transform.rotation) as GameObject;

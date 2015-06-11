@@ -16,13 +16,28 @@ public class Unarou : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () { 
+		int x = Random.Range (0, 100);
+		int y = Random.Range (-(x / 2), 100 - x / 2);
+		int z = -x - y;
+		Debug.Log (x + " " + y + " " + z);
+
 		if (!GameObject.Find ("Emilia"))
-			Instantiate (Resources.Load ("Characters/Emilia"), new Vector3 (2.25f, 2.25f, 0), transform.rotation).name = "Emilia";
+			Instantiate (Resources.Load ("Characters/Emilia"), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = "Emilia";
+		GameObject.Find ("Emilia").GetComponent<Character> ().Position (x, y, z);
+
+		x += Random.Range (1, 2);
+		y += Random.Range (1, 2);
+		z = -x - y;
+		Debug.Log (x + " " + y + " " + z);
+
 		if (!GameObject.Find ("Flora"))
-			Instantiate (Resources.Load ("Characters/Flora"), new Vector3 (0, 2.7f, 0), transform.rotation).name = "Flora";
+			Instantiate (Resources.Load ("Characters/Flora"), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = "Flora";
+		GameObject.Find ("Flora").GetComponent<Character> ().Position (x, y, z);
+
 		CharacterList = GameObject.FindGameObjectsWithTag ("Player");
-		foreach (GameObject character in CharacterList)
-			character.GetComponent<Character> ().Position ();
+		foreach (GameObject character in CharacterList) {
+			character.GetComponent<Skills> ().SetUp ();
+		}
 		SelectedChar = CharacterList [0];
 		selected = CharacterList [0].GetComponent<Character> ();
 
@@ -33,7 +48,6 @@ public class Unarou : MonoBehaviour {
 		MapGeneration ();
 
 		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
-		Debug.Log (PlayerTile.name);
 
 		foreach (GameObject character in CharacterList) 
 			character.GetComponent<Character> ().FoW ();
@@ -50,7 +64,6 @@ public class Unarou : MonoBehaviour {
 	protected void MapGeneration () {		
 		MapGene.GetComponent<MapGen> ().GenerateMap ();
 		TileList = GameObject.FindGameObjectsWithTag ("Tile");
-		Debug.Log (TileList.Length);
 		foreach (GameObject MapTile in TileList)
 			if ((!MapTile.GetComponent <Tile> ().adj0  || 
 			     !MapTile.GetComponent <Tile> ().adj1  || 
