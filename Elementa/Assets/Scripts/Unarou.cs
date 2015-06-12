@@ -46,9 +46,6 @@ public class Unarou : MonoBehaviour {
 		MapGeneration ();
 
 		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
-
-		foreach (GameObject character in CharacterList) 
-			character.GetComponent<Character> ().FoW ();
 	}
 	
 	// Update is called once per frame

@@ -8,7 +8,6 @@ public class Tile : Unarou {
 	public int elevation, water, x, y, z;
 	public int visionLevel = 0;
 	public int OnLoS = 0;
-	public bool seen = false;
 	public bool NextToPlayer = false;
 	public bool HasPlayer = false;
 	public int MPC = 1;
@@ -42,13 +41,14 @@ public class Tile : Unarou {
 	// Update is called once per frame
 	void Update () {
 		if (adj0 == PlayerTile ||
-		    adj1 == PlayerTile ||
-		    adj2 == PlayerTile ||
-		    adj3 == PlayerTile ||
-		    adj4 == PlayerTile ||
-		    adj5 == PlayerTile)
+			adj1 == PlayerTile ||
+			adj2 == PlayerTile ||
+			adj3 == PlayerTile ||
+			adj4 == PlayerTile ||
+			adj5 == PlayerTile)
 			NextToPlayer = true;
-		else NextToPlayer = false;
+		else
+			NextToPlayer = false;
 		int count = 0;
 		foreach (GameObject c in CharacterList) {
 			if (c.transform.position == transform.position) {
@@ -68,34 +68,54 @@ public class Tile : Unarou {
 			}
 		} else { 
 			int pEle = PlayerTile.GetComponent<Tile> ().elevation;
-/*			if (elevation - pEle >= 200 + 50 * (Mathf.Max (selected.LoS, 4) - 4) && !seen) {
-				GetComponent<SpriteRenderer> ().color = Color.black;
-				MPC = selected.MaxMP + Mathf.FloorToInt((elevation - 100) / 50);
-			} else 
-*/			if (elevation - pEle >= 100 /* && seen */) {
-				MPC = selected.MaxMP + Mathf.CeilToInt((elevation - pEle - 100) / 50 + 1);	//HERE
+			if (elevation - pEle >= 100) {
+				MPC = selected.MaxMP + Mathf.CeilToInt ((elevation - pEle - 100) / 50 + 1);	//HERE
 			} else if (elevation - pEle < 100 && elevation - pEle >= 50)
-				MPC = Mathf.Min(2, selected.MP);											//HERE
-			else if (elevation - pEle < 50 && elevation -pEle > -100)
+				MPC = Mathf.Min (2, selected.MP);											//HERE
+			else if (elevation - pEle < 50 && elevation - pEle > -100)
 				MPC = 1;																	//HERE
-			else if ((elevation - pEle <= -100 && elevation - pEle > -150) || (water >= Mathf.FloorToInt(pEle / 2) && elevation - pEle < -100 && water != 0))
+			else if ((elevation - pEle <= -100 && elevation - pEle > -150) || (water >= Mathf.FloorToInt (pEle / 2) && elevation - pEle < -100 && water != 0))
 				MPC = 0;																	//HERE
-			else MPC = selected.MP + 1;														//HERE
+			else
+				MPC = selected.MP + 1;														//HERE
 			if (MPC <= selected.MP && !HasPlayer)
 				GetComponent<SpriteRenderer> ().color = Color.green;
 			else 
 				GetComponent<SpriteRenderer> ().color = Color.black;
-
 		}
 
 		OnLoS = 0;
 		foreach (GameObject player in CharacterList) {
 			Character tmp0 = player.GetComponent<Character> ();
-			if (Distance(tmp0.x, tmp0.y, tmp0.z, x, y, z) <= tmp0.LoS) {
+			if (Distance (tmp0.x, tmp0.y, tmp0.z, x, y, z) <= tmp0.LoS) {
 				OnLoS++;
-			}
-			else OnLoS--;
+			} else
+				OnLoS--;
 		}
+
+		if (OnLoS > -CharacterList.Length)
+			foreach (GameObject player in CharacterList) {
+				Character tmp0 = player.GetComponent<Character> ();
+
+				bool u200p = elevation - tmp0.ele < 200 + 50 * (Mathf.Max (tmp0.LoS, 4) - 4);
+				bool io50 = elevation - tmp0.ele >= 50;
+				bool u50 = elevation - tmp0.ele < 50;
+				bool om200m = elevation - tmp0.ele > -200 - 50 * (Mathf.Max (tmp0.LoS, 4) - 4);
+			
+				if (Distance (tmp0.x, tmp0.y, tmp0.z, x, y, z) <= tmp0.LoS) {
+					if (visionLevel == 0) {
+						if (u200p && io50)
+							visionLevel = 1;
+						if (u50 && om200m)
+							visionLevel = 2;
+					}  else if (visionLevel == 1 && u50 && om200m)
+						visionLevel = 2;
+					else if (visionLevel == 2 && OnLoS == -CharacterList.Length + 2 && (io50 || !om200m))
+						visionLevel = 1;
+				}
+			}
+		else if (visionLevel == 2)
+			visionLevel = 1;
 	}
 
 	void ElevationDiff() {		
@@ -164,7 +184,6 @@ public class Tile : Unarou {
 				selected.AP--;
 			}
 			MapGeneration ();
-			selected.FoW ();
 			SelectedChar.GetComponent<Skills> ().AddExp (100);
 			GameObject.Find ("Canvas/PlayerB").GetComponent<UnlimitedButtonWorks> ().ChangeTexts ();
 		}
