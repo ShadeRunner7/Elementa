@@ -10,7 +10,7 @@ public class Tile : Unarou {
 	public int OnLoS = 0;
 	public bool NextToPlayer = false;
 	public bool HasPlayer = false;
-	public int MPC = 1;
+	public int MPC = 1, APC = 0, eMPC;
 	
 	public GameObject adj0, adj1, adj2, adj3, adj4, adj5;
 	public GameObject adjH0, adjH1, adjH2, adjH3, adjH4, adjH5;
@@ -69,16 +69,33 @@ public class Tile : Unarou {
 		} else { 
 			int pEle = PlayerTile.GetComponent<Tile> ().elevation;
 			if (elevation - pEle >= 100) {
-				MPC = selected.MaxMP + Mathf.CeilToInt ((elevation - pEle - 100) / 50 + 1);	//HERE
-			} else if (elevation - pEle < 100 && elevation - pEle >= 50)
-				MPC = Mathf.Min (2, selected.MP);											//HERE
-			else if (elevation - pEle < 50 && elevation - pEle > -100)
+				MPC = 1;
+				eMPC = Mathf.CeilToInt ((elevation - pEle - 100) / 50 + 1); 				//HERE
+				APC = 1;
+			} else if (elevation - pEle < 100 && elevation - pEle >= 50) {
+				if (selected.MP <= selected.MaxMP)
+					MPC = Mathf.Min (2, selected.MP);										//HERE
+				else
+					MPC = Mathf.Min (2, selected.MaxMP);									//AND HERE
+				eMPC = 0;
+				APC = 0;
+			}
+			else if (elevation - pEle < 50 && elevation - pEle > -100) {
 				MPC = 1;																	//HERE
-			else if ((elevation - pEle <= -100 && elevation - pEle > -150) || (water >= Mathf.FloorToInt (pEle / 2) && elevation - pEle < -100 && water != 0))
+				eMPC = 0;
+				APC = 0;
+			}
+			else if ((elevation - pEle <= -100 && elevation - pEle > -150) || (water >= Mathf.FloorToInt (pEle / 2) && elevation - pEle < -100 && water != 0)) {
 				MPC = 0;																	//HERE
-			else
+				eMPC = 0;
+				APC = 0;
+			}
+			else {
 				MPC = selected.MP + 1;														//HERE
-			if (MPC <= selected.MP && !HasPlayer)
+				eMPC = 0;
+				APC = 0;
+			}
+			if (((APC == 0 && MPC <= selected.MP) || (APC == 1 && eMPC <= selected.MP - selected.MaxMP)) && !HasPlayer)
 				GetComponent<SpriteRenderer> ().color = Color.green;
 			else 
 				GetComponent<SpriteRenderer> ().color = Color.black;
@@ -175,16 +192,19 @@ public class Tile : Unarou {
 			
 			PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
 
-			if (MPC > selected.MaxMP)
-				selected.MP = 0;
+			if (eMPC > 0) {
+				selected.MP = selected.MaxMP - MPC;
+				selected.AP -= APC;
+			}
 			else if (selected.MP > selected.MaxMP) selected.MP = selected.MaxMP - MPC;
 			else selected.MP -= MPC;
-			if (selected.MP == 0) {
+			if (selected.MP == 0 || selected.AP == 0) {
 				Moving = false;
-				selected.AP--;
+				if (selected.AP > 0)
+					selected.AP--;
 			}
 			MapGeneration ();
-			SelectedChar.GetComponent<Skills> ().AddExp (100);
+			SelectedChar.GetComponent<Skills> ().AddExp (eMPC + MPC);
 			GameObject.Find ("Canvas/PlayerB").GetComponent<UnlimitedButtonWorks> ().ChangeTexts ();
 		}
 	}
