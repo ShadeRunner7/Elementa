@@ -45,7 +45,12 @@ public class Unarou : MonoBehaviour {
 
 		MapGeneration ();
 
-		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
+		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);		
+		foreach (GameObject character in CharacterList) {
+			character.GetComponent<Character> ().Update ();
+		}
+
+		MapGeneration (1);
 	}
 	
 	// Update is called once per frame
@@ -58,16 +63,15 @@ public class Unarou : MonoBehaviour {
 
 	protected void MapGeneration () {		
 		MapGene.GetComponent<MapGen> ().GenerateMap ();
-		TileList = GameObject.FindGameObjectsWithTag ("Tile");
-		foreach (GameObject MapTile in TileList)
-			if ((!MapTile.GetComponent <Tile> ().adj0  || 
-			     !MapTile.GetComponent <Tile> ().adj1  || 
-			     !MapTile.GetComponent <Tile> ().adj2  || 
-			     !MapTile.GetComponent <Tile> ().adj3  ||
-			     !MapTile.GetComponent <Tile> ().adj4  ||
-			     !MapTile.GetComponent <Tile> ().adj5) &&
-			      MapTile.GetComponent <Tile> ().OnLoS > -CharacterList.Length)
+		TileList = GameObject.FindGameObjectsWithTag ("NewTile");
+		foreach (GameObject MapTile in TileList) 
 			MapTile.GetComponent <Tile> ().SetUp ();
+	}
+
+	protected void MapGeneration (int xenomorph) {		
+		TileList = GameObject.FindGameObjectsWithTag ("Tile");
+		foreach (GameObject MapTile in TileList) 
+			MapTile.GetComponent <Tile> ().VisionCheck ();
 	}
 
 

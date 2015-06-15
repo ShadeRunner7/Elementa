@@ -53,8 +53,15 @@ public class MapGen : Unarou {
 
 	void TileGenerator(float x, float y, int gx, int gy, int gz) {
 		int wood = Dice (32), fire = Dice (32), ground = Dice (32), metal = Dice (32), water = Dice (32), leEle = 0;
-		if (!MultipleMaxes (wood, fire, ground, metal, water))
-			leEle = Mathf.Max (wood, fire, ground, metal, water);
+		while (MultipleMaxes (wood, fire, ground, metal, water)) {
+			wood = Dice (32);
+			fire = Dice (32);
+			ground = Dice (32);
+			metal = Dice (32);
+			water = Dice (32);
+			leEle = 0;
+		}
+		leEle = Mathf.Max (wood, fire, ground, metal, water);
 
 		if (leEle == wood) {
 			tile = Instantiate (Resources.Load (tiles [0]), new Vector3 (x, y, 0), transform.rotation) as GameObject;

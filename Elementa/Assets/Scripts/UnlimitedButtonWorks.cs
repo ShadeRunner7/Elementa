@@ -39,10 +39,10 @@ public class UnlimitedButtonWorks : Unarou {
 	}
 
 	internal void ChangeTexts() {
-		if (selected.MP <= selected.MaxMP)
+		if (selected.eMP == 0)
 			MP.text = selected.MP.ToString ();
 		else
-			MP.text = selected.MaxMP + "+" + (selected.MP - selected.MaxMP);
+			MP.text = selected.MaxMP + "+" + selected.eMP;
 		AP.text = selected.AP.ToString ();
 	}
 
@@ -51,10 +51,12 @@ public class UnlimitedButtonWorks : Unarou {
 			Moving = false;
 			if (selected.MP < selected.MaxMP)
 				selected.AP--;
-		}
+		}		
+		PlayerTile.GetComponent<Tile> ().VisionCheck ();
+		
 		if (k == CharacterList.Length)
 			k = 0;
-		SelectedChar = CharacterList[k];
+		SelectedChar = CharacterList [k];
 		selected = SelectedChar.GetComponent<Character> ();
 		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
 		ChangeTexts ();
@@ -66,14 +68,20 @@ public class UnlimitedButtonWorks : Unarou {
 			me1.SetActive (true);
 			me2.SetActive (true);
 			me3.SetActive (true);
+		} else {			
+			me0.SetActive (false);
+			me1.SetActive (false);
+			me2.SetActive (false);
+			me3.SetActive (false);
 		}
-
 		k++;
 	}
 
 	public void MoveChar () {
-		if (!Moving && selected.AP > 0)
+		if (!Moving && selected.AP > 0) {
 			Moving = true;
+			PlayerTile.GetComponent<Tile> ().MoveCheck ();
+		}
 		else
 			Moving = false;
 	}
@@ -110,8 +118,8 @@ public class UnlimitedButtonWorks : Unarou {
 			Character tmp = chara.GetComponent<Character> ();
 			if (tmp.MP < tmp.MaxMP) 
 				tmp.MP = tmp.MaxMP;
-			else if (tmp.MP >=tmp.MaxMP && tmp.MP <= 57) 
-				tmp.MP++;
+			else if (tmp.MP == tmp.MaxMP && tmp.eMP <= 57) 
+				tmp.eMP++;
 			tmp.AP = tmp.MaxAP;
 		}
 		ChangeTexts ();

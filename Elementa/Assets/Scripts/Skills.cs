@@ -13,8 +13,8 @@ public class Skills : Unarou {
 		GetComponent<Character> ().levelpoints = 1;
 		GetComponent<Character> ().LoS = 2;
 		GetComponent<Character> ().MaxMP = 1;
+		GetComponent<Character> ().eMP = 0;
 		GetComponent<Character> ().MaxAP = 1;
-		GetComponent<Character> ().ele = 10000;
 	}
 	
 	// Update is called once per frame

@@ -4,7 +4,7 @@ using System.Collections;
 public class Character : Unarou {
 	
 	public int x, y, z;
-	public int LoS, MP, AP;
+	public int LoS, MP, AP, eMP;
 	public int MaxMP, MaxAP, Level, EXP;
 	public int UtilityLvl = 0, PowerLvl = 0, DefenseLvl = 0;
 	public int levelpoints;
@@ -17,8 +17,8 @@ public class Character : Unarou {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		ele = GameObject.Find (x + "," + y + "," + z).GetComponent<Tile> ().elevation;
+	internal void Update () {
+		ele = PlayerTile.GetComponent<Tile> ().elevation;
 	}
 
 	internal void Position(int ux, int uy, int uz) {

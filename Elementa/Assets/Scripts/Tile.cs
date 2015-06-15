@@ -13,7 +13,9 @@ public class Tile : Unarou {
 	public int MPC = 1, APC = 0, eMPC;
 	
 	public GameObject adj0, adj1, adj2, adj3, adj4, adj5;
-	public GameObject adjH0, adjH1, adjH2, adjH3, adjH4, adjH5;
+	public GameObject adjH0, adjH1, adjH2, adjH3, adjH4, adjH5;	
+	List<Tile> adje;
+
 
 	// Use this for initialization
 	void Start () {	
@@ -34,18 +36,59 @@ public class Tile : Unarou {
 			if (!adj5) adj5 = new GameObject();
 		}
 
+
 		ElevationDiff ();
-		Update ();
+		AllCheck ();
+		
+		if (adj0 && adj1 && adj2 && adj3 && adj4 && adj5)
+			tag = "Tile";
 	}
 
 	// Update is called once per frame
 	void Update () {
+	}
+
+	internal void MoveCheck () {
+		foreach (Tile hex in adje) {
+			if (hex) {
+				if (hex.elevation - elevation >= 100) {
+					hex.MPC = 1;
+					hex.eMPC = Mathf.CeilToInt ((hex.elevation - elevation - 100) / 50 + 1); 		//HERE
+					hex.APC = 1;
+				} else if (hex.elevation - elevation < 100 && hex.elevation - elevation >= 50) {
+					hex.MPC = Mathf.Min (2, selected.MP);											//AND HERE
+					hex.eMPC = selected.eMP;
+					hex.APC = 0;
+				} else if (hex.elevation - elevation < 50 && hex.elevation - elevation > -100) {
+					hex.MPC = 1;																	//HERE
+					hex.eMPC = 0;
+					hex.APC = 0;
+				} else if ((hex.elevation - elevation <= -100 && hex.elevation - elevation > -150) || 
+					(hex.water >= Mathf.FloorToInt (elevation / 2) && hex.elevation - elevation < -100 && hex.water != 0)) {
+					hex.MPC = 0;																	//HERE
+					hex.eMPC = selected.eMP;
+					hex.APC = 0;
+				} else {
+					hex.MPC = selected.MP + 1;														//HERE
+					hex.eMPC = selected.eMP + 1;
+					hex.APC = selected.AP + 1;
+				}
+				if (!hex.HasPlayer && selected.AP >= hex.APC && selected.MP >= hex.MPC && selected.eMP >= hex.eMPC && Moving) {
+					hex.GetComponent<SpriteRenderer> ().color = Color.green;
+				} else {
+					hex.GetComponent<SpriteRenderer> ().color = Color.black;				
+				}
+			}
+		}
+	}
+
+	internal void AllCheck () {		
 		if (adj0 == PlayerTile ||
-			adj1 == PlayerTile ||
-			adj2 == PlayerTile ||
-			adj3 == PlayerTile ||
-			adj4 == PlayerTile ||
-			adj5 == PlayerTile)
+		    adj1 == PlayerTile ||
+		    adj2 == PlayerTile ||
+		    adj3 == PlayerTile ||
+		    adj4 == PlayerTile ||
+		    adj5 == PlayerTile)
 			NextToPlayer = true;
 		else
 			NextToPlayer = false;
@@ -57,7 +100,7 @@ public class Tile : Unarou {
 			} else if (count == 0)
 				HasPlayer = false;
 		}
-
+		
 		if (!(NextToPlayer && Moving)) {
 			if (visionLevel == 0) {
 				GetComponent<SpriteRenderer> ().color = Color.black;
@@ -66,41 +109,8 @@ public class Tile : Unarou {
 			} else if (visionLevel == 2) {
 				GetComponent<SpriteRenderer> ().color = Color.white;
 			}
-		} else { 
-			int pEle = PlayerTile.GetComponent<Tile> ().elevation;
-			if (elevation - pEle >= 100) {
-				MPC = 1;
-				eMPC = Mathf.CeilToInt ((elevation - pEle - 100) / 50 + 1); 				//HERE
-				APC = 1;
-			} else if (elevation - pEle < 100 && elevation - pEle >= 50) {
-				if (selected.MP <= selected.MaxMP)
-					MPC = Mathf.Min (2, selected.MP);										//HERE
-				else
-					MPC = Mathf.Min (2, selected.MaxMP);									//AND HERE
-				eMPC = 0;
-				APC = 0;
-			}
-			else if (elevation - pEle < 50 && elevation - pEle > -100) {
-				MPC = 1;																	//HERE
-				eMPC = 0;
-				APC = 0;
-			}
-			else if ((elevation - pEle <= -100 && elevation - pEle > -150) || (water >= Mathf.FloorToInt (pEle / 2) && elevation - pEle < -100 && water != 0)) {
-				MPC = 0;																	//HERE
-				eMPC = 0;
-				APC = 0;
-			}
-			else {
-				MPC = selected.MP + 1;														//HERE
-				eMPC = 0;
-				APC = 0;
-			}
-			if (((APC == 0 && MPC <= selected.MP) || (APC == 1 && eMPC <= selected.MP - selected.MaxMP)) && !HasPlayer)
-				GetComponent<SpriteRenderer> ().color = Color.green;
-			else 
-				GetComponent<SpriteRenderer> ().color = Color.black;
-		}
-
+		} 
+		
 		OnLoS = 0;
 		foreach (GameObject player in CharacterList) {
 			Character tmp0 = player.GetComponent<Character> ();
@@ -109,34 +119,42 @@ public class Tile : Unarou {
 			} else
 				OnLoS--;
 		}
+	}
 
-		if (OnLoS > -CharacterList.Length)
+	internal void VisionCheck () {
+		if (OnLoS > -CharacterList.Length) {
 			foreach (GameObject player in CharacterList) {
 				Character tmp0 = player.GetComponent<Character> ();
-
+			
 				bool u200p = elevation - tmp0.ele < 200 + 50 * (Mathf.Max (tmp0.LoS, 4) - 4);
 				bool io50 = elevation - tmp0.ele >= 50;
 				bool u50 = elevation - tmp0.ele < 50;
 				bool om200m = elevation - tmp0.ele > -200 - 50 * (Mathf.Max (tmp0.LoS, 4) - 4);
+				int d = Distance (tmp0.x, tmp0.y, tmp0.z, x, y, z);
 			
-				if (Distance (tmp0.x, tmp0.y, tmp0.z, x, y, z) <= tmp0.LoS) {
+				if (d <= tmp0.LoS) {
 					if (visionLevel == 0) {
-						if (u200p && io50)
+						Debug.Log (elevation + " " + tmp0.ele);
+						if (u200p && io50) {
 							visionLevel = 1;
-						if (u50 && om200m)
+						}
+						if (u50 && om200m) {
 							visionLevel = 2;
-					}  else if (visionLevel == 1 && u50 && om200m)
+						}
+					} else if (visionLevel == 1 && u50 && om200m) {
 						visionLevel = 2;
-					else if (visionLevel == 2 && OnLoS == -CharacterList.Length + 2 && (io50 || !om200m))
+					} else if (visionLevel == 2 && OnLoS == -CharacterList.Length + 2 && (io50 || !om200m)) {
 						visionLevel = 1;
+					}
 				}
 			}
-		else if (visionLevel == 2)
+		} else if (visionLevel == 2) {
 			visionLevel = 1;
+		}
 	}
-
-	void ElevationDiff() {		
-		List<Tile> adje = new List<Tile> ();
+	
+	void ElevationDiff() {	
+		adje = new List<Tile> ();
 		if (adj0) adje.Add (adj0.GetComponent<Tile> ());
 		else adje.Add (null);
 		if (adj1) adje.Add (adj1.GetComponent<Tile> ());
@@ -192,19 +210,24 @@ public class Tile : Unarou {
 			
 			PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
 
-			if (eMPC > 0) {
-				selected.MP = selected.MaxMP - MPC;
-				selected.AP -= APC;
-			}
-			else if (selected.MP > selected.MaxMP) selected.MP = selected.MaxMP - MPC;
-			else selected.MP -= MPC;
-			if (selected.MP == 0 || selected.AP == 0) {
+			selected.MP -= MPC;
+			selected.eMP = 0;
+			selected.AP -= APC;
+
+			if (selected.MP == 0 && selected.AP != 0)
+				selected.AP--;
+			else 
+				MoveCheck ();
+
+			if (selected.MP == 0 || selected.AP == 0)
 				Moving = false;
-				if (selected.AP > 0)
-					selected.AP--;
-			}
+			
 			MapGeneration ();
-			SelectedChar.GetComponent<Skills> ().AddExp (eMPC + MPC);
+			GameObject[] seen = GameObject.FindGameObjectsWithTag("Tile");
+			foreach (GameObject h in seen)
+				h.GetComponent<Tile> ().VisionCheck ();
+
+			SelectedChar.GetComponent<Skills> ().AddExp ((eMPC + MPC) * 10);
 			GameObject.Find ("Canvas/PlayerB").GetComponent<UnlimitedButtonWorks> ().ChangeTexts ();
 		}
 	}
