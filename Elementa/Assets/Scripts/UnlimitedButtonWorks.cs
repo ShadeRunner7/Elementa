@@ -52,13 +52,15 @@ public class UnlimitedButtonWorks : Unarou {
 			if (selected.MP < selected.MaxMP)
 				selected.AP--;
 		}		
-		PlayerTile.GetComponent<Tile> ().VisionCheck ();
+//		PlayerTile.GetComponent<Tile> ().VisionCheck ();
 		
 		if (k == CharacterList.Length)
 			k = 0;
 		SelectedChar = CharacterList [k];
 		selected = SelectedChar.GetComponent<Character> ();
 		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
+		//		PlayerTile.GetComponent<Tile> ().AllCheck ();
+		PlayerTile.GetComponent<Tile> ().IThinkThisIsGonnaBeABadIdea ();
 		ChangeTexts ();
 		buttonT.text = selected.name;
 		cam.SendMessageUpwards ("SetTarget", SelectedChar, SendMessageOptions.DontRequireReceiver);
@@ -80,10 +82,10 @@ public class UnlimitedButtonWorks : Unarou {
 	public void MoveChar () {
 		if (!Moving && selected.AP > 0) {
 			Moving = true;
-			PlayerTile.GetComponent<Tile> ().MoveCheck ();
-		}
-		else
+		} else {
 			Moving = false;
+		}
+		PlayerTile.GetComponent<Tile> ().MoveCheck ();
 	}
 
 	public void Action () {

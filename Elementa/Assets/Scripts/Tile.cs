@@ -36,8 +36,7 @@ public class Tile : Unarou {
 			if (!adj5) adj5 = new GameObject();
 		}
 
-
-		ElevationDiff ();
+		ElevationDiff (); //ADJES SET
 		AllCheck ();
 		
 		if (adj0 && adj1 && adj2 && adj3 && adj4 && adj5)
@@ -51,48 +50,59 @@ public class Tile : Unarou {
 	internal void MoveCheck () {
 		foreach (Tile hex in adje) {
 			if (hex) {
-				if (hex.elevation - elevation >= 100) {
-					hex.MPC = 1;
-					hex.eMPC = Mathf.CeilToInt ((hex.elevation - elevation - 100) / 50 + 1); 		//HERE
-					hex.APC = 1;
-				} else if (hex.elevation - elevation < 100 && hex.elevation - elevation >= 50) {
-					hex.MPC = Mathf.Min (2, selected.MP);											//AND HERE
-					hex.eMPC = selected.eMP;
-					hex.APC = 0;
-				} else if (hex.elevation - elevation < 50 && hex.elevation - elevation > -100) {
-					hex.MPC = 1;																	//HERE
-					hex.eMPC = 0;
-					hex.APC = 0;
-				} else if ((hex.elevation - elevation <= -100 && hex.elevation - elevation > -150) || 
-					(hex.water >= Mathf.FloorToInt (elevation / 2) && hex.elevation - elevation < -100 && hex.water != 0)) {
-					hex.MPC = 0;																	//HERE
-					hex.eMPC = selected.eMP;
-					hex.APC = 0;
+				if (Moving) {
+					if (hex.elevation - elevation >= 100) {
+						hex.MPC = 1;
+						hex.eMPC = Mathf.CeilToInt ((hex.elevation - elevation - 100) / 50 + 1); 		//HERE
+						hex.APC = 1;
+					} else if (hex.elevation - elevation < 100 && hex.elevation - elevation >= 50) {
+						hex.MPC = Mathf.Min (2, selected.MP);											//AND HERE
+						hex.eMPC = selected.eMP;
+						hex.APC = 0;
+					} else if (hex.elevation - elevation < 50 && hex.elevation - elevation > -100) {
+						hex.MPC = 1;																	//HERE
+						hex.eMPC = 0;
+						hex.APC = 0;
+					} else if ((hex.elevation - elevation <= -100 && hex.elevation - elevation > -150) || 
+						(hex.water >= Mathf.FloorToInt (elevation / 2) && hex.elevation - elevation < -100 && hex.water != 0)) {
+						hex.MPC = 0;																	//HERE
+						hex.eMPC = selected.eMP;
+						hex.APC = 0;
+					} else {
+						hex.MPC = selected.MP + 1;														//HERE
+						hex.eMPC = selected.eMP + 1;
+						hex.APC = selected.AP + 1;
+					}
+					if (!hex.HasPlayer && selected.AP >= hex.APC && selected.MP >= hex.MPC && selected.eMP >= hex.eMPC && Moving) {
+						hex.GetComponent<SpriteRenderer> ().color = Color.green;
+					} else {
+						hex.GetComponent<SpriteRenderer> ().color = Color.red;				
+					}
 				} else {
-					hex.MPC = selected.MP + 1;														//HERE
-					hex.eMPC = selected.eMP + 1;
-					hex.APC = selected.AP + 1;
-				}
-				if (!hex.HasPlayer && selected.AP >= hex.APC && selected.MP >= hex.MPC && selected.eMP >= hex.eMPC && Moving) {
-					hex.GetComponent<SpriteRenderer> ().color = Color.green;
-				} else {
-					hex.GetComponent<SpriteRenderer> ().color = Color.black;				
+					if (hex.visionLevel == 0) {
+						hex.GetComponent<SpriteRenderer> ().color = Color.black;
+					} else if (hex.visionLevel == 1) {
+						hex.GetComponent<SpriteRenderer> ().color = Color.grey;
+					} else if (hex.visionLevel == 2) {
+						hex.GetComponent<SpriteRenderer> ().color = Color.white;
+					}
 				}
 			}
 		}
 	}
 
-	internal void AllCheck () {		
-		if (adj0 == PlayerTile ||
-		    adj1 == PlayerTile ||
-		    adj2 == PlayerTile ||
-		    adj3 == PlayerTile ||
-		    adj4 == PlayerTile ||
-		    adj5 == PlayerTile)
+	internal void AllCheck () {
+/*		if (adj0 == PlayerTile ||
+			adj1 == PlayerTile ||
+			adj2 == PlayerTile ||
+			adj3 == PlayerTile ||
+			adj4 == PlayerTile ||
+			adj5 == PlayerTile)
 			NextToPlayer = true;
 		else
 			NextToPlayer = false;
-		int count = 0;
+
+*/		int count = 0;
 		foreach (GameObject c in CharacterList) {
 			if (c.transform.position == transform.position) {
 				HasPlayer = true;
@@ -100,17 +110,7 @@ public class Tile : Unarou {
 			} else if (count == 0)
 				HasPlayer = false;
 		}
-		
-		if (!(NextToPlayer && Moving)) {
-			if (visionLevel == 0) {
-				GetComponent<SpriteRenderer> ().color = Color.black;
-			} else if (visionLevel == 1) {
-				GetComponent<SpriteRenderer> ().color = Color.grey;
-			} else if (visionLevel == 2) {
-				GetComponent<SpriteRenderer> ().color = Color.white;
-			}
-		} 
-		
+				
 		OnLoS = 0;
 		foreach (GameObject player in CharacterList) {
 			Character tmp0 = player.GetComponent<Character> ();
@@ -120,6 +120,7 @@ public class Tile : Unarou {
 				OnLoS--;
 		}
 	}
+
 
 	internal void VisionCheck () {
 		if (OnLoS > -CharacterList.Length) {
@@ -134,7 +135,6 @@ public class Tile : Unarou {
 			
 				if (d <= tmp0.LoS) {
 					if (visionLevel == 0) {
-						Debug.Log (elevation + " " + tmp0.ele);
 						if (u200p && io50) {
 							visionLevel = 1;
 						}
@@ -148,8 +148,17 @@ public class Tile : Unarou {
 					}
 				}
 			}
-		} else if (visionLevel == 2) {
+		} else if (visionLevel == 2)
 			visionLevel = 1;
+
+		if (!(NextToPlayer && Moving)) {
+			if (visionLevel == 0) {
+				GetComponent<SpriteRenderer> ().color = Color.black;
+			} else if (visionLevel == 1) {
+				GetComponent<SpriteRenderer> ().color = Color.grey;
+			} else if (visionLevel == 2) {
+				GetComponent<SpriteRenderer> ().color = Color.white;
+			}
 		}
 	}
 	
@@ -189,12 +198,14 @@ public class Tile : Unarou {
 		bool om100 = elevation - oEle > -100;		//over minus
 		bool ium100 = elevation - oEle <= -100;		//is under minus
 
-		if ((u150 && io100) || (oW >= Mathf.Floor (elevation / 2) && io100 && oW != 0))
-			Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = x + "," + y + "," + z + "." + a;
-		else if (ium50 && om100)
-			Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = x + "," + y + "," + z + "." + a;
-		else if (ium100)
-			Instantiate (Resources.Load ("HTiles/H-100Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = x + "," + y + "," + z + "." + a;
+		if (!GameObject.Find (x + "," + y + "," + z + "." + a)) {
+			if ((u150 && io100) || (oW >= Mathf.Floor (elevation / 2) && io100 && oW != 0))
+				Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = x + "," + y + "," + z + "." + a;
+			else if (ium50 && om100)
+				Instantiate (Resources.Load ("HTiles/H-50Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = x + "," + y + "," + z + "." + a;
+			else if (ium100)
+				Instantiate (Resources.Load ("HTiles/H-100Tile" + a), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = x + "," + y + "," + z + "." + a;
+		}
 	}
 
 	void OnMouseUp() {
@@ -222,13 +233,25 @@ public class Tile : Unarou {
 			if (selected.MP == 0 || selected.AP == 0)
 				Moving = false;
 			
-			MapGeneration ();
-			GameObject[] seen = GameObject.FindGameObjectsWithTag("Tile");
-			foreach (GameObject h in seen)
-				h.GetComponent<Tile> ().VisionCheck ();
+			MapGeneration (0);
+			IThinkThisIsGonnaBeABadIdea ();
 
 			SelectedChar.GetComponent<Skills> ().AddExp ((eMPC + MPC) * 10);
 			GameObject.Find ("Canvas/PlayerB").GetComponent<UnlimitedButtonWorks> ().ChangeTexts ();
+		}
+	}
+
+	internal void IThinkThisIsGonnaBeABadIdea () {		
+		List<Tile> seen = new List<Tile> ();
+		TileList = GameObject.FindGameObjectsWithTag ("Tile");
+		foreach (GameObject t in TileList) {
+			if (t.GetComponent<Tile> ().OnLoS > -CharacterList.Length)
+				seen.Add(t.GetComponent<Tile>());
+		}
+		
+		foreach (Tile h in seen) {
+			h.AllCheck ();
+			h.VisionCheck ();
 		}
 	}
 }

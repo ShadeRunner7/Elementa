@@ -16,11 +16,16 @@ public class Unarou : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () { 
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//  Characters  //
+
+		//////////////////
 		int x = Random.Range (0, 100);
 		int y = Random.Range (-(x / 2), 100 - x / 2);
 		int z = -x - y;
 
-		if (!GameObject.Find ("Emilia"))
+//		if (!GameObject.Find ("Emilia"))
 			Instantiate (Resources.Load ("Characters/Emilia"), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = "Emilia";
 		GameObject.Find ("Emilia").GetComponent<Character> ().Position (x, y, z);
 
@@ -28,9 +33,11 @@ public class Unarou : MonoBehaviour {
 		y += Random.Range (1, 2);
 		z = -x - y;
 
-		if (!GameObject.Find ("Flora"))
+//		if (!GameObject.Find ("Flora"))
 			Instantiate (Resources.Load ("Characters/Flora"), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = "Flora";
 		GameObject.Find ("Flora").GetComponent<Character> ().Position (x, y, z);
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		CharacterList = GameObject.FindGameObjectsWithTag ("Player");
 		foreach (GameObject character in CharacterList) {
@@ -38,14 +45,22 @@ public class Unarou : MonoBehaviour {
 		}
 		SelectedChar = CharacterList [0];
 		selected = CharacterList [0].GetComponent<Character> ();
-
-		if (!GameObject.Find ("MapGen"))
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		//  Map  //
+		
+		///////////
+//		if (!GameObject.Find ("MapGen"))
 			MapGene = Instantiate (Resources.Load ("MapGen")) as GameObject;
 		MapGene.name = "MapGen";
 
-		MapGeneration ();
+		MapGeneration (0);
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);		
+		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
+
 		foreach (GameObject character in CharacterList) {
 			character.GetComponent<Character> ().Update ();
 		}
@@ -61,17 +76,21 @@ public class Unarou : MonoBehaviour {
 		return Mathf.Max (Mathf.Abs (x0 - x1), Mathf.Abs (y0 - y1), Mathf.Abs (z0 - z1));
 	}
 
-	protected void MapGeneration () {		
-		MapGene.GetComponent<MapGen> ().GenerateMap ();
-		TileList = GameObject.FindGameObjectsWithTag ("NewTile");
-		foreach (GameObject MapTile in TileList) 
-			MapTile.GetComponent <Tile> ().SetUp ();
-	}
+	protected void MapGeneration (int xenomorph) {
+		if (xenomorph == 0 || xenomorph == 1) {
+			MapGene.GetComponent<MapGen> ().GenerateMap();
+			TileList = GameObject.FindGameObjectsWithTag ("NewTile");
+			foreach (GameObject MapTile in TileList) 
+				MapTile.GetComponent <Tile> ().SetUp ();
+		}
 
-	protected void MapGeneration (int xenomorph) {		
-		TileList = GameObject.FindGameObjectsWithTag ("Tile");
-		foreach (GameObject MapTile in TileList) 
-			MapTile.GetComponent <Tile> ().VisionCheck ();
+		if (xenomorph == 1) {
+			TileList = GameObject.FindGameObjectsWithTag ("Tile");
+			foreach (GameObject MapTile in TileList) {
+				MapTile.GetComponent <Tile> ().AllCheck ();
+				MapTile.GetComponent <Tile> ().VisionCheck ();
+			}
+		}
 	}
 
 

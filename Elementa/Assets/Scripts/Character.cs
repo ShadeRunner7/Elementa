@@ -9,7 +9,7 @@ public class Character : Unarou {
 	public int UtilityLvl = 0, PowerLvl = 0, DefenseLvl = 0;
 	public int levelpoints;
 	public int ele;
-	int oEle, gx, gy, gz, d;
+	int gx, gy, gz, d;
 	GameObject tmp;
 
 	// Use this for initialization
@@ -18,7 +18,7 @@ public class Character : Unarou {
 	
 	// Update is called once per frame
 	internal void Update () {
-		ele = PlayerTile.GetComponent<Tile> ().elevation;
+		ele = GameObject.Find (x + "," + y + "," + z).GetComponent<Tile> ().elevation;
 	}
 
 	internal void Position(int ux, int uy, int uz) {
