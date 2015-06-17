@@ -10,18 +10,17 @@ public class Skills : Unarou {
 	internal void SetUp () {
 		GetComponent<Character> ().EXP = 0;
 		GetComponent<Character> ().Level = 1;
-		GetComponent<Character> ().levelpoints = 1;
+		GetComponent<Character> ().levelpoints = 5;
 		GetComponent<Character> ().LoS = 2;
 		GetComponent<Character> ().MaxMP = 1;
 		GetComponent<Character> ().eMP = 0;
 		GetComponent<Character> ().MaxAP = 1;
+		GetComponent<Character> ().CR = 1;
+		GetComponent<Character> ().CA = 1;
 	}
 	
 	// Update is called once per frame
-	void Update () {
-			this.GetComponent<Character> ().LoS = Mathf.Min(2 + (int)Mathf.Floor(this.GetComponent<Character> ().UtilityLvl * .2f), 7);
-			this.GetComponent<Character> ().MaxMP = 1 + (int)Mathf.Floor(this.GetComponent<Character> ().UtilityLvl * .2f);
-			this.GetComponent<Character> ().MaxAP = 1 + (int)Mathf.Floor(this.GetComponent<Character> ().UtilityLvl * .15f);
+	void Update () {;
 	}
 
 	internal void AddExp (int a) {

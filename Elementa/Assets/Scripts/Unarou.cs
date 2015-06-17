@@ -7,15 +7,17 @@ public class Unarou : MonoBehaviour {
 	protected static GameObject[] TileList;
 	protected static GameObject SelectedChar;
 	protected static bool Moving = false;
+	protected static bool Action = false;
 	protected static Character selected;
 	protected static string[] tiles = {
 		"Tiles/WoodTile", "Tiles/FireTile", "Tiles/GroundTile", "Tiles/MetalTile", "Tiles/WaterTile"
 	};
 	protected static GameObject PlayerTile;
 	static GameObject MapGene;
-
+	protected static Sprite[] MA;
 	// Use this for initialization
 	void Start () { 
+		MA = Resources.LoadAll <Sprite> ("MATiles");
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		//  Characters  //
@@ -45,6 +47,8 @@ public class Unarou : MonoBehaviour {
 		}
 		SelectedChar = CharacterList [0];
 		selected = CharacterList [0].GetComponent<Character> ();
+
+
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -62,7 +66,7 @@ public class Unarou : MonoBehaviour {
 		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
 
 		foreach (GameObject character in CharacterList) {
-			character.GetComponent<Character> ().Update ();
+			character.GetComponent<Character> ().PlayerSetUp ();
 		}
 
 		MapGeneration (1);

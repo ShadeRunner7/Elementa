@@ -47,9 +47,10 @@ public class UnlimitedButtonWorks : Unarou {
 	}
 
 	public void SelectChar () {
-		if (Moving) {
+		if (Moving || Action) {
 			Moving = false;
-			if (selected.MP < selected.MaxMP)
+			Action = false;
+			if ((selected.MP < selected.MaxMP || selected.CAC != 0) && selected.AP != 0)
 				selected.AP--;
 		}		
 //		PlayerTile.GetComponent<Tile> ().VisionCheck ();
@@ -59,7 +60,6 @@ public class UnlimitedButtonWorks : Unarou {
 		SelectedChar = CharacterList [k];
 		selected = SelectedChar.GetComponent<Character> ();
 		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
-		//		PlayerTile.GetComponent<Tile> ().AllCheck ();
 		PlayerTile.GetComponent<Tile> ().IThinkThisIsGonnaBeABadIdea ();
 		ChangeTexts ();
 		buttonT.text = selected.name;
@@ -80,20 +80,30 @@ public class UnlimitedButtonWorks : Unarou {
 	}
 
 	public void MoveChar () {
-		if (!Moving && selected.AP > 0) {
-			Moving = true;
-		} else {
-			Moving = false;
+		if (selected.AP > 0) {
+			if (!Moving) {
+				if (Action)
+					Action = false;
+				selected.Moved = false;
+				Moving = true;
+			} else {
+				Moving = false;
+				if (selected.Moved)
+					selected.AP--;
+			}
 		}
+		ChangeTexts ();
 		PlayerTile.GetComponent<Tile> ().MoveCheck ();
 	}
 
-	public void Action () {
-		if (Moving) {
-			Moving = false;
-			if (selected.MP < selected.MaxMP)
-				selected.AP--;
-		}
+	public void ActionChar () {
+		if (!Action && selected.AP > 0) {
+			if (Moving)
+				Moving = false;
+			Action = true;
+		} else
+			Action = false;
+		PlayerTile.GetComponent<Tile> ().ActionCheck ();
 	}
 	
 	public void AddLevel () {
@@ -116,6 +126,7 @@ public class UnlimitedButtonWorks : Unarou {
 
 	public void EndTurn () {
 		Moving = false;
+		Action = false;
 		foreach (GameObject chara in CharacterList) {
 			Character tmp = chara.GetComponent<Character> ();
 			if (tmp.MP < tmp.MaxMP) 
@@ -123,8 +134,19 @@ public class UnlimitedButtonWorks : Unarou {
 			else if (tmp.MP == tmp.MaxMP && tmp.eMP <= 57) 
 				tmp.eMP++;
 			tmp.AP = tmp.MaxAP;
+			tmp.CAC = 0;
+			
+			tmp.LoS = Mathf.Min (2 + (int)Mathf.Floor (tmp.UtilityLvl * .2f), 7);
+			tmp.CR = tmp.LoS - 1;
+			tmp.MaxMP = 1 + (int)Mathf.Floor (tmp.UtilityLvl * .2f);
+			tmp.MaxAP = 1 + (int)Mathf.Floor (tmp.UtilityLvl * .15f);
+			tmp.CA = 1 + (int)Mathf.Floor (tmp.PowerLvl * .5f);
 		}
 		ChangeTexts ();
+
+		foreach (GameObject h in TileList)
+			if (h.GetComponent <Tile> ().IsActioned)
+				h.GetComponent<Tile> ().actionTurn--;
 		
 		k = 0;
 		SelectChar ();
