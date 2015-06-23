@@ -13,10 +13,12 @@ public class Tile : Unarou {
 	public bool IsActioned = false;
 	public int actionTurn = 0;
 	public int MPC = 1, APC = 0, eMPC;
+	public int EffectedPower;
 	public Sprite original;
 	
 	public GameObject adj0, adj1, adj2, adj3, adj4, adj5;
 	public GameObject adjH0, adjH1, adjH2, adjH3, adjH4, adjH5;	
+	public GameObject ActionedBy;
 	internal List<Tile> adje, seen;
 	static List<GameObject> ActionHexes;
 
@@ -55,66 +57,72 @@ public class Tile : Unarou {
 	}
 
 	internal void MoveCheck () {
-		foreach (Tile hex in adje) {
-			if (hex) {
-				if (Moving) {
-					if (hex.elevation - elevation >= 100) {
-						hex.MPC = 1;
-						hex.eMPC = Mathf.CeilToInt ((hex.elevation - elevation - 100) / 50 + 1); 		//HERE
-						hex.APC = 1;
-					} else if (hex.elevation - elevation < 100 && hex.elevation - elevation >= 50) {
-						hex.MPC = Mathf.Min (2, selected.MP);											//AND HERE
-						hex.eMPC = selected.eMP;
-						hex.APC = 0;
-					} else if (hex.elevation - elevation < 50 && hex.elevation - elevation > -100) {
-						hex.MPC = 1;																	//HERE
-						hex.eMPC = 0;
-						hex.APC = 0;
-					} else if ((hex.elevation - elevation <= -100 && hex.elevation - elevation > -150) || 
-						(hex.water >= Mathf.FloorToInt (elevation / 2) && hex.elevation - elevation < -100 && hex.water != 0)) {
-						hex.MPC = 0;																	//HERE
-						hex.eMPC = selected.eMP;
-						hex.APC = 0;
-					} else {
-						hex.MPC = selected.MP + 1;														//HERE
-						hex.eMPC = selected.eMP + 1;
-						hex.APC = selected.AP + 1;
+		if (selected.AP > 0) {
+			foreach (Tile hex in adje) {
+				if (hex) {
+					if (Moving) {
+						if (hex.elevation - elevation >= 100) {
+							hex.MPC = 1;
+							hex.eMPC = Mathf.CeilToInt ((hex.elevation - elevation - 100) / 50 + 1); 		//HERE
+							hex.APC = 1;
+						} else if (hex.elevation - elevation < 100 && hex.elevation - elevation >= 50) {
+							hex.MPC = Mathf.Min (2, selected.MP);											//AND HERE
+							hex.eMPC = selected.eMP;
+							hex.APC = 0;
+						} else if (hex.elevation - elevation < 50 && hex.elevation - elevation > -100) {
+							hex.MPC = 1;																	//HERE
+							hex.eMPC = 0;
+							hex.APC = 0;
+						} else if ((hex.elevation - elevation <= -100 && hex.elevation - elevation > -150) || 
+							(hex.water >= Mathf.FloorToInt (elevation / 2) && hex.elevation - elevation < -100 && hex.water != 0)) {
+							hex.MPC = 0;																	//HERE
+							hex.eMPC = selected.eMP;
+							hex.APC = 0;
+						} else {
+							hex.MPC = selected.MP + 1;														//HERE
+							hex.eMPC = selected.eMP + 1;
+							hex.APC = selected.AP + 1;
+						}
+						if (!hex.HasPlayer && selected.AP >= hex.APC && selected.MP >= hex.MPC && selected.eMP >= hex.eMPC && Moving) {
+							hex.GetComponent<SpriteRenderer> ().sprite = MA [0];
+							if (hex.IsActioned)
+								hex.GetComponent<SpriteRenderer> ().sprite = MA [1];
+						} else {
+							hex.GetComponent<SpriteRenderer> ().sprite = MA [2];				
+						}
 					}
-					if (!hex.HasPlayer && selected.AP >= hex.APC && selected.MP >= hex.MPC && selected.eMP >= hex.eMPC && Moving) {
-						hex.GetComponent<SpriteRenderer> ().sprite = MA [0];
-						if (hex.IsActioned)
-							hex.GetComponent<SpriteRenderer> ().sprite = MA [1];
-					} else {
-						hex.GetComponent<SpriteRenderer> ().sprite = MA [2];				
-					}
-				} else
-					origins (hex, hex.IsActioned);
+//				else if (!Moving && !IsActioned) {
+//					Debug.Log ("Yo");
+//					GetComponent<SpriteRenderer> ().sprite = original;
+//				}
+//				else
+//					origins (hex, hex.IsActioned);
+				}
 			}
 		}
-		if (!IsActioned)
-			GetComponent<SpriteRenderer> ().sprite = original;
 	}
 
 	internal void ActionCheck () {
-		if (selected.CAC == 0) {
+		if (selected.AP > 0) {
 			foreach (GameObject h in ActionHexes) {
 				Tile tmp = h.GetComponent<Tile> ();
-				if (Distance (selected.x, selected.y, selected.z, tmp.x, tmp.y, tmp.z) <= selected.CR && Action) {
+				if (Distance (selected.x, selected.y, selected.z, tmp.x, tmp.y, tmp.z) <= selected.CR && Action && !tmp.IsActioned) {
 					h.GetComponent<SpriteRenderer> ().sprite = MA [1];
-				} //else 
+				} 
+//				else 
 //					origins (tmp, false);
 			}
-		} else {
-			foreach (GameObject h in ActionHexes) {
-				Tile tmp = h.GetComponent<Tile> ();
+
+//		foreach (GameObject h in ActionHexes) {
+//			Tile tmp = h.GetComponent<Tile> ();
 //				origins (tmp, tmp.IsActioned);
-			}
+//		}
 
 			ActionHexes = new List<GameObject> ();
 			foreach (GameObject t in TileList)
 				if (t.GetComponent<Tile> ().IsActioned)
 					foreach (Tile adje in t.GetComponent<Tile> ().adje)
-						if (adje.visionLevel > 0) 
+						if (adje && adje.visionLevel > 0 && adje.OnLoS > -CharacterList.Length) 
 							ActionHexes.Add (GameObject.Find (adje.name));
 
 			foreach (GameObject h in ActionHexes) {
@@ -148,7 +156,7 @@ public class Tile : Unarou {
 				OnLoS--;
 		}
 		
-		if (actionTurn == 0)
+		if (actionTurn <= 0 && ActionedBy)
 			effects ();
 	}
 
@@ -290,7 +298,7 @@ public class Tile : Unarou {
 			} else 
 				MoveCheck ();
 
-			SelectedChar.GetComponent<Skills> ().AddExp ((eMPC + MPC) * 10);
+			SelectedChar.GetComponent<Skills> ().AddExp ((eMPC + MPC) * 100);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,17 +315,18 @@ public class Tile : Unarou {
 			GetComponent<SpriteRenderer> ().sprite = MA [2];
 			IsActioned = true;
 			actionTurn = 1;
+			ActionedBy = SelectedChar;
+			selected.Did = true;
 
 			if (selected.CAC == selected.CA) {
 				selected.AP--;
 				Action = false;
+				selected.Did = false;
 			} else
 				ActionCheck ();
 
 			if (!Action)
 				IThinkThisIsGonnaBeABadIdea ();
-			
-			SelectedChar.GetComponent<Skills> ().AddExp ((selected.CAC) * 10);
 		}
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -325,7 +334,14 @@ public class Tile : Unarou {
 	}
 
 	void effects () {
+		Character tmp = ActionedBy.GetComponent<Character> ();
+		if (tmp.LTCAC > 1)
+			EffectedPower = (int)Mathf.Floor (tmp.PWR / tmp.LTCAC);
+		else
+			EffectedPower = tmp.PWR;
+		ActionedBy.GetComponent<Skills> ().AddExp (EffectedPower * 100);
 		IsActioned = false;
+		ActionedBy = null;
 	}
 
 	internal void IThinkThisIsGonnaBeABadIdea () {		

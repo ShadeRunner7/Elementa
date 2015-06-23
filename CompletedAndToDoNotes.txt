@@ -4,20 +4,18 @@ Mapgenerator
 		Heightmap generating
 		Basic tiles
 		Multiple characters generate map
+		Less random elevation
+		Movement Point cost script
 	To-Do
 		Advanced tiles
-		Less random elevation
 		Less Fire Tiles
-		Movement Point cost script
-			To Character?
 
 Character
 	Complete
 		Position finding
-	To-Do
 		Line of Sight -generation
 		Movement
-			Movement Point cost?
+	To-Do
 		Actions
 			NPC
 			Enemy AI?????

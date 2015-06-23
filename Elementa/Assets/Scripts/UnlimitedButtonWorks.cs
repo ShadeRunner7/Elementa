@@ -20,14 +20,14 @@ public class UnlimitedButtonWorks : Unarou {
 			
 			me0 = GameObject.Find ("Canvas/UtilityB");
 			me1 = GameObject.Find ("Canvas/PowerB");
-			me2 = GameObject.Find ("Canvas/DefenseB");
+			me2 = GameObject.Find ("Canvas/DefenceB");
 			me3 = GameObject.Find ("Canvas/LevelUpPanel");
 
 			SelectChar ();
 		} else {
 			me0 = GameObject.Find ("Canvas/UtilityB");
 			me1 = GameObject.Find ("Canvas/PowerB");
-			me2 = GameObject.Find ("Canvas/DefenseB");
+			me2 = GameObject.Find ("Canvas/DefenceB");
 			me3 = GameObject.Find ("Canvas/LevelUpPanel");
 		}
 	}
@@ -50,8 +50,11 @@ public class UnlimitedButtonWorks : Unarou {
 		if (Moving || Action) {
 			Moving = false;
 			Action = false;
-			if ((selected.MP < selected.MaxMP || selected.CAC != 0) && selected.AP != 0)
+			if (selected.Moved || selected.Did) {
+				selected.Moved = false;
+				selected.Did = false;
 				selected.AP--;
+			}
 		}		
 //		PlayerTile.GetComponent<Tile> ().VisionCheck ();
 		
@@ -80,29 +83,47 @@ public class UnlimitedButtonWorks : Unarou {
 	}
 
 	public void MoveChar () {
-		if (selected.AP > 0) {
-			if (!Moving) {
-				if (Action)
-					Action = false;
-				selected.Moved = false;
-				Moving = true;
-			} else {
-				Moving = false;
-				if (selected.Moved)
+		if (!Moving && selected.AP > 0 && selected.MP > 0) {
+			if (Action) {
+				Action = false;
+				if (selected.Did) {
 					selected.AP--;
+					selected.Did = false;
+				}
+			}
+			selected.Moved = false;
+			Moving = true;
+		} else {
+			Moving = false;
+			if (selected.Moved) {
+				selected.AP--;
+				selected.Moved = false;
 			}
 		}
 		ChangeTexts ();
+		PlayerTile.GetComponent<Tile> ().IThinkThisIsGonnaBeABadIdea ();
 		PlayerTile.GetComponent<Tile> ().MoveCheck ();
 	}
 
 	public void ActionChar () {
-		if (!Action && selected.AP > 0) {
-			if (Moving)
+		if (!Action && selected.AP > 0 && selected.CA != selected.CAC) {
+			if (Moving) {
 				Moving = false;
+				if (selected.Moved) {
+					selected.AP--;
+					selected.Moved = false;
+				}
+			}
 			Action = true;
-		} else
+		} else {
 			Action = false;
+			if (selected.Did) {
+				selected.AP--;
+				selected.Did = false;
+			}
+		}
+		ChangeTexts ();
+		PlayerTile.GetComponent<Tile> ().IThinkThisIsGonnaBeABadIdea ();
 		PlayerTile.GetComponent<Tile> ().ActionCheck ();
 	}
 	
@@ -112,8 +133,8 @@ public class UnlimitedButtonWorks : Unarou {
 				selected.UtilityLvl++;
 			if (name == "PowerB")
 				selected.PowerLvl++;
-			if (name == "DefenseB")
-				selected.DefenseLvl++;
+			if (name == "DefenceB")
+				selected.DefenceLvl++;
 			selected.levelpoints--;
 			if (selected.levelpoints == 0 ){
 				me0.SetActive (false);
@@ -134,19 +155,25 @@ public class UnlimitedButtonWorks : Unarou {
 			else if (tmp.MP == tmp.MaxMP && tmp.eMP <= 57) 
 				tmp.eMP++;
 			tmp.AP = tmp.MaxAP;
+			tmp.LTCAC = tmp.CAC;
 			tmp.CAC = 0;
 			
 			tmp.LoS = Mathf.Min (2 + (int)Mathf.Floor (tmp.UtilityLvl * .2f), 7);
 			tmp.CR = tmp.LoS - 1;
 			tmp.MaxMP = 1 + (int)Mathf.Floor (tmp.UtilityLvl * .2f);
-			tmp.MaxAP = 1 + (int)Mathf.Floor (tmp.UtilityLvl * .15f);
-			tmp.CA = 1 + (int)Mathf.Floor (tmp.PowerLvl * .5f);
+			tmp.MaxAP = 1 + Mathf.Min ((int)Mathf.Floor (tmp.UtilityLvl * .1f), 3);
+
+			tmp.CA = 1 + (int)Mathf.Floor (tmp.PowerLvl * .2f);
+			tmp.PWR = 10 + tmp.PowerLvl;
 		}
 		ChangeTexts ();
 
 		foreach (GameObject h in TileList)
-			if (h.GetComponent <Tile> ().IsActioned)
+			if (h.GetComponent <Tile> ().IsActioned) {
 				h.GetComponent<Tile> ().actionTurn--;
+				h.GetComponent<Tile> ().AllCheck ();
+				h.GetComponent<Tile> ().VisionCheck ();
+			}
 		
 		k = 0;
 		SelectChar ();

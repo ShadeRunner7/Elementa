@@ -17,6 +17,7 @@ public class Skills : Unarou {
 		GetComponent<Character> ().MaxAP = 1;
 		GetComponent<Character> ().CR = 1;
 		GetComponent<Character> ().CA = 1;
+		GetComponent<Character> ().PWR = 10;
 	}
 	
 	// Update is called once per frame
