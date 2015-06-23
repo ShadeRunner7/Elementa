@@ -3,11 +3,11 @@ Attributes
 		Cast range up +.2
 		Movement Point up +.2
 		Line of sight up +.2
-		Actions per turn +.15
+		Actions per turn +.1
 		Pro-Power +1%
 
 	Power
-		Cast area up +.5
+		Cast area up +.2
 		Power up +.5
 
 	Defense
