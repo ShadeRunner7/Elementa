@@ -81,9 +81,9 @@ public class Tile : Unarou {
 						hex.APC = selected.AP + 1;
 					}
 					if (!hex.HasPlayer && selected.AP >= hex.APC && selected.MP >= hex.MPC && selected.eMP >= hex.eMPC && Moving) {
-
 						hex.GetComponent<SpriteRenderer> ().sprite = MA [0];
-
+						if (hex.IsActioned)
+							hex.GetComponent<SpriteRenderer> ().sprite = MA [1];
 					} else {
 						hex.GetComponent<SpriteRenderer> ().sprite = MA [2];				
 					}
@@ -101,13 +101,13 @@ public class Tile : Unarou {
 				Tile tmp = h.GetComponent<Tile> ();
 				if (Distance (selected.x, selected.y, selected.z, tmp.x, tmp.y, tmp.z) <= selected.CR && Action) {
 					h.GetComponent<SpriteRenderer> ().sprite = MA [1];
-				} else 
-					origins (tmp, false);
+				} //else 
+//					origins (tmp, false);
 			}
 		} else {
 			foreach (GameObject h in ActionHexes) {
 				Tile tmp = h.GetComponent<Tile> ();
-				origins (tmp, tmp.IsActioned);
+//				origins (tmp, tmp.IsActioned);
 			}
 
 			ActionHexes = new List<GameObject> ();
@@ -121,10 +121,10 @@ public class Tile : Unarou {
 				Tile tmp = h.GetComponent<Tile> ();
 				if (Action && !tmp.IsActioned) {
 					h.GetComponent<SpriteRenderer> ().sprite = MA [1];
-					Debug.Log (h.GetComponent<SpriteRenderer> ().sprite);
+//					Debug.Log (h.GetComponent<SpriteRenderer> ().sprite);
 				}
-				else
-					origins (tmp, tmp.IsActioned);
+//				else
+//					origins (tmp, tmp.IsActioned);
 			}
 		}
 	}
@@ -263,7 +263,8 @@ public class Tile : Unarou {
 		if (Moving 												&& 
 			selected.MP > 0 									&& 
 			selected.AP > 0										&&
-			GetComponent<SpriteRenderer> ().sprite == MA [0]	) {
+			(GetComponent<SpriteRenderer> ().sprite == MA [0]	||
+		 	 GetComponent<SpriteRenderer> ().sprite == MA [1]	) ) {
 
 
 			SelectedChar.transform.position = transform.position;
