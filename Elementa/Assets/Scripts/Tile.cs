@@ -21,7 +21,7 @@ public class Tile : Unarou {
 	public GameObject ActionedBy;
 	internal List<Tile> adje, seen;
 	static List<GameObject> ActionHexes;
-
+	public int MCALN;	//MyCastAreaListNumber
 
 	// Use this for initialization
 	void Start () {	
@@ -104,35 +104,40 @@ public class Tile : Unarou {
 
 	internal void ActionCheck () {
 		if (selected.AP > 0) {
-			foreach (GameObject h in ActionHexes) {
-				Tile tmp = h.GetComponent<Tile> ();
-				if (Distance (selected.x, selected.y, selected.z, tmp.x, tmp.y, tmp.z) <= selected.CR && Action && !tmp.IsActioned) {
-					h.GetComponent<SpriteRenderer> ().sprite = MA [3];
-				} 
+			if (selected.CAC == 0) {
+				foreach (GameObject h in ActionHexes) {
+					Tile tmp = h.GetComponent<Tile> ();
+					if (Distance (selected.x, selected.y, selected.z, tmp.x, tmp.y, tmp.z) <= selected.CR && Action && !tmp.IsActioned) {
+						h.GetComponent<SpriteRenderer> ().sprite = MA [3];
+					} 
 //				else 
 //					origins (tmp, false);
+				}
 			}
 
 //		foreach (GameObject h in ActionHexes) {
 //			Tile tmp = h.GetComponent<Tile> ();
 //				origins (tmp, tmp.IsActioned);
 //		}
+		else {
+				ActionHexes = new List<GameObject> ();
+				foreach (GameObject t in TileList)
+					if (t.GetComponent<Tile> ().IsActioned) {
+						if (ActionedBy.name == selected.name && t.GetComponent<Tile> ().MCALN == CAL)
+							foreach (Tile adje in t.GetComponent<Tile> ().adje)
+								if (adje && adje.visionLevel > 0 && adje.OnLoS > -CharacterList.Length) 
+									ActionHexes.Add (GameObject.Find (adje.name));
+					}
 
-			ActionHexes = new List<GameObject> ();
-			foreach (GameObject t in TileList)
-				if (t.GetComponent<Tile> ().IsActioned)
-					foreach (Tile adje in t.GetComponent<Tile> ().adje)
-						if (adje && adje.visionLevel > 0 && adje.OnLoS > -CharacterList.Length) 
-							ActionHexes.Add (GameObject.Find (adje.name));
-
-			foreach (GameObject h in ActionHexes) {
-				Tile tmp = h.GetComponent<Tile> ();
-				if (Action && !tmp.IsActioned) {
-					h.GetComponent<SpriteRenderer> ().sprite = MA [3];
+				foreach (GameObject h in ActionHexes) {
+					Tile tmp = h.GetComponent<Tile> ();
+					if (Action && !tmp.IsActioned) {
+						h.GetComponent<SpriteRenderer> ().sprite = MA [3];
 //					Debug.Log (h.GetComponent<SpriteRenderer> ().sprite);
-				}
+					}
 //				else
 //					origins (tmp, tmp.IsActioned);
+				}
 			}
 		}
 	}
@@ -307,10 +312,10 @@ public class Tile : Unarou {
 		//  Actions  //
 		
 		///////////////
-		if (Action 																	&& 
-			selected.AP > 0 														&&
-			selected.CAC < selected.CA												&&
-		    GetComponent<SpriteRenderer> ().sprite == MA [3]					) {
+		if (Action 												&& 
+			selected.AP > 0 									&&
+			selected.CAC < selected.CA							&&
+		    GetComponent<SpriteRenderer> ().sprite == MA [3]	) {
 
 			selected.CAC++;
 			GetComponent<SpriteRenderer> ().sprite = MA [4];
@@ -318,13 +323,19 @@ public class Tile : Unarou {
 			actionTurn = 1;
 			ActionedBy = SelectedChar;
 			selected.Did = true;
+			CastAreaList[CAL].Add(GameObject.Find (name));
+			MCALN = CAL;
 
 			if (selected.CAC == selected.CA) {
 				selected.AP--;
 				Action = false;
 				selected.Did = false;
-			} else
+				selected.CAC = 0;
+				CAL++;
+			} else {
+				IThinkThisIsGonnaBeABadIdea ();
 				ActionCheck ();
+			}
 
 			if (!Action)
 				IThinkThisIsGonnaBeABadIdea ();
@@ -336,10 +347,7 @@ public class Tile : Unarou {
 
 	void effects () {
 		Character tmp = ActionedBy.GetComponent<Character> ();
-		if (tmp.LTCAC > 1)
-			EffectedPower = (int)Mathf.Floor (tmp.PWR / tmp.LTCAC);
-		else
-			EffectedPower = tmp.PWR;
+		EffectedPower = (int)Mathf.Floor (tmp.LTPWR / CastAreaList[MCALN].Count);
 		ActionedBy.GetComponent<Skills> ().AddExp (EffectedPower * 100);
 		IsActioned = false;
 		ActionedBy = null;

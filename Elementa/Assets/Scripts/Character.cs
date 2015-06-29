@@ -4,7 +4,7 @@ using System.Collections;
 public class Character : Unarou {
 	
 	public int x, y, z;
-	public int LoS, CR, CA, CAC, LTCAC, MP, AP, eMP, PWR;
+	public int LoS, CR, CA, CAC, LTPWR, MP, AP, eMP, PWR;
 	public int MaxMP, MaxAP, Level, EXP;
 	public int UtilityLvl = 0, PowerLvl = 0, DefenceLvl = 0;
 	public int levelpoints;

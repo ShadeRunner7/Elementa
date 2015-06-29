@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class UnlimitedButtonWorks : Unarou {
@@ -61,6 +62,10 @@ public class UnlimitedButtonWorks : Unarou {
 			Moving = false;
 			Action = false;
 			if (selected.Moved || selected.Did) {
+				if (selected.Did) {
+					selected.CAC = 0;
+					CAL++;
+				}
 				selected.Moved = false;
 				selected.Did = false;
 				selected.AP--;
@@ -98,6 +103,8 @@ public class UnlimitedButtonWorks : Unarou {
 				Action = false;
 				if (selected.Did) {
 					selected.AP--;
+					selected.CAC = 0;
+					CAL++;
 					selected.Did = false;
 				}
 			}
@@ -129,6 +136,8 @@ public class UnlimitedButtonWorks : Unarou {
 			Action = false;
 			if (selected.Did) {
 				selected.AP--;
+				selected.CAC = 0;
+				CAL++;
 				selected.Did = false;
 			}
 		}
@@ -174,6 +183,9 @@ public class UnlimitedButtonWorks : Unarou {
 		Action = false;
 		foreach (GameObject chara in CharacterList) {
 			Character tmp = chara.GetComponent<Character> ();
+
+			if (tmp.MP == tmp.MaxMP && tmp.eMP <= 57) 
+				tmp.eMP++;
 			
 			tmp.LoS = Mathf.Min (2 + (int)Mathf.Floor (tmp.UtilityLvl * .2f), 7);
 			tmp.CR = tmp.LoS - 1;
@@ -181,25 +193,33 @@ public class UnlimitedButtonWorks : Unarou {
 			tmp.MaxAP = 1 + Mathf.Min ((int)Mathf.Floor (tmp.UtilityLvl * .1f), 3);
 			
 			tmp.CA = 1 + (int)Mathf.Floor (tmp.PowerLvl * .2f);
+			tmp.LTPWR = tmp.PWR;
 			tmp.PWR = 10 + tmp.PowerLvl;
 
-			if (tmp.MP < tmp.MaxMP) 
-				tmp.MP = tmp.MaxMP;
-			else if (tmp.MP == tmp.MaxMP && tmp.eMP <= 57) 
-				tmp.eMP++;
+			tmp.MP = tmp.MaxMP;
 			tmp.AP = tmp.MaxAP;
-			tmp.LTCAC = tmp.CAC;
 			tmp.CAC = 0;
 		}
 		ChangeTexts ();
 
-		foreach (GameObject h in TileList)
-			if (h.GetComponent <Tile> ().IsActioned) {
-				h.GetComponent<Tile> ().actionTurn--;
-				h.GetComponent<Tile> ().AllCheck ();
-				h.GetComponent<Tile> ().VisionCheck ();
+		foreach (List<GameObject> h in CastAreaList) {
+			foreach (GameObject hh in h) {
+				hh.GetComponent<Tile> ().actionTurn--;
+				hh.GetComponent<Tile> ().AllCheck ();
+				hh.GetComponent<Tile> ().VisionCheck ();
 			}
+		}
+
+		int LC = 0;
+		foreach (GameObject c in CharacterList)			
+			LC += c.GetComponent<Character> ().AP;
+
+		CastAreaList = new List<GameObject>[LC];
+		for (CAL = 0; CAL < LC; CAL++) 
+			CastAreaList [CAL] = new List<GameObject> ();		
 		
+		CAL = 0;
+
 		k = 0;
 
 		MapGeneration (1);

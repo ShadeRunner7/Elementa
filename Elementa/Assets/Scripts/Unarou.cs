@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Unarou : MonoBehaviour {
 
@@ -15,6 +16,9 @@ public class Unarou : MonoBehaviour {
 	protected static GameObject PlayerTile;
 	static GameObject MapGene;
 	protected static Sprite[] MA;
+	public static List<GameObject>[] CastAreaList;
+	public static int CAL;
+
 	// Use this for initialization
 	void Start () { 
 		MA = Resources.LoadAll <Sprite> ("MATiles");
@@ -44,10 +48,19 @@ public class Unarou : MonoBehaviour {
 			CharacterList = GameObject.FindGameObjectsWithTag ("Player");
 		
 //		Debug.Log (CharacterList == null);
-
-		foreach (GameObject character in CharacterList) {
-			character.GetComponent<Skills> ().SetUp ();
+		
+		int LC = 0; 
+		foreach (GameObject c in CharacterList) {
+			c.GetComponent<Skills> ().SetUp ();
+			LC += c.GetComponent<Character> ().AP;
 		}
+
+		CastAreaList = new List<GameObject>[LC];
+		for (CAL = 0; CAL < LC; CAL++)
+			CastAreaList[CAL] = new List<GameObject> ();
+		
+		CAL = 0;
+
 		SelectedChar = CharacterList [0];
 		selected = CharacterList [0].GetComponent<Character> ();
 
