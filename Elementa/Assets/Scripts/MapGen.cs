@@ -16,27 +16,40 @@ public class MapGen : Unarou {
 	void Update () {
 	}
 
-	internal void GenerateMap () {		
-		foreach (GameObject character in CharacterList) {
-			cx = character.GetComponent<Character> ().x;
-			cy = character.GetComponent<Character> ().y;
-			cz = character.GetComponent<Character> ().z;
-			LoS = character.GetComponent<Character> ().LoS + 1;			
-			
+	internal void GenerateMap () {
+		foreach (GameObject c in CharacterList) {
+			cx = c.GetComponent<Character> ().x;
+			cy = c.GetComponent<Character> ().y;
+			cz = c.GetComponent<Character> ().z;
+			LoS = c.GetComponent<Character> ().LoS + 1;
+
+//			Debug.Log (c + ", " + cx + "," + cy + "," + cz);
+//			int DC = 0;
+
 			for (gx = cx - LoS; gx <= cx + LoS; gx++) {
-				gy = -gx / 2 - (cy + LoS);
-				gz = -(gx + 1) / 2 + (cy + LoS);
+				gy = -gx / 2 - Mathf.Abs(cy + LoS);	
+				gz = -(gx + 1) / 2 + Mathf.Abs(cy + LoS);
 				x = gx * .75f;
+//				Debug.Log ("First for, cx = " + cx + ", gy = " + gy + ", x = " + x + ", cy = " + cy + ", LoS = " + LoS + ", cy + LoS = " + (cy + LoS));
 				for (; gy <= cy + LoS; gy++) {
 					y = (gy - gz) * .45f;
+					if (y == 8.099999f)
+						y = 8.1f;
+					if (y == -8.099999f)
+						y = -8.1f;
+//					Debug.Log ("Second for, " + x + " " + y);
 					if (x >= 0 && y >= 0) {
 						tmp = GameObject.Find (gx + "," + gy + "," + gz);
-						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS && !tmp)
+						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS && !tmp) {						
+//							Debug.Log ("Generating " + x + " " + y + ", " + gx + "," + gy + "," + gz);
 							TileGenerator (x, y, gx, gy, gz);
+//							DC++;
+						}
 					}
 					gz--;
 				}
 			}
+//			Debug.Log (DC + " tiles generated");
 		}
 			
 /*		for (gx = 0; gx < 50; gx++) {				
@@ -63,6 +76,9 @@ public class MapGen : Unarou {
 		}
 		leEle = Mathf.Max (wood, fire, ground, metal, water);
 
+		//			//
+		//	Wood	//
+		//			//
 		if (leEle == wood) {
 			tile = Instantiate (Resources.Load (tiles [0]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
 			Tile tmp = tile.GetComponent<Tile> ();
@@ -70,6 +86,9 @@ public class MapGen : Unarou {
 			tmp.y = gy;
 			tmp.z = gz;
 
+			//
+			// Main Element
+			//
 			int dice = Dice (32);
 			if (dice == 32)
 				tmp.wood = Random.Range (900, 1000);
@@ -82,10 +101,16 @@ public class MapGen : Unarou {
 			else if (dice < 5)
 				tmp.wood = Random.Range (0, 299);
 
-			tmp.ground = Random.Range (0, 400);
-			if (Dice (6) == 6)
-				tmp.water = 400 - tmp.ground;
-			else if (tmp.ground < 400) {
+			//
+			// Secondary element
+			//
+			if (Dice (6) == 6) {
+				tmp.water = Random.Range (0, 400);
+				tmp.ground = 400 - tmp.water;
+			} 
+			//
+			// Groundlevel
+			else {
 				dice = Dice (32);
 				if (dice == 32)
 					tmp.ground += Random.Range (900 - tmp.ground, 1000);
@@ -99,13 +124,20 @@ public class MapGen : Unarou {
 
 			tmp.name = gx + "," + gy + "," + gz;
 			tmp.elevation = tmp.ground + tmp.water + Mathf.FloorToInt (tmp.metal / 2) - 400;
-		} else if (leEle == ground) {
+		} 
+		//			//
+		//	Ground	//
+		//			//
+		else if (leEle == ground) {
 			tile = Instantiate (Resources.Load (tiles [2]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
 			Tile tmp = tile.GetComponent<Tile> ();
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
 
+			//
+			// Main Element
+			//
 			int dice = Dice (32);
 			if (dice == 32)
 				tmp.ground += Random.Range (1000, 1400);
@@ -116,34 +148,61 @@ public class MapGen : Unarou {
 			else if (dice < 15)
 				tmp.ground += Random.Range (400, 599);
 
+			//
+			// Secondary elements
+			//
 			if (Dice (32) >= 30) {
 				int k = Random.Range (0, 500);
-				tmp.metal = k - k % 400;
+				if (k >= 200)
+					tmp.metal = k - k % 200;
 			}
 			if (Dice (32) >= 25)
 				tmp.wood = Random.Range (0, Mathf.RoundToInt (tmp.ground / 10));
 
 			tmp.name = gx + "," + gy + "," + gz;
 			tmp.elevation = tmp.ground + Mathf.FloorToInt (tmp.metal / 2) - 400;
-		} else if (leEle == water) {
+		} 
+		//			//
+		//	Water	//
+		//			//
+		else if (leEle == water) {
 			tile = Instantiate (Resources.Load (tiles [4]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
 			Tile tmp = tile.GetComponent<Tile> ();
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
+
+			//
+			// Main Element
+			//
 			tmp.water = Random.Range (1, 400);
+
+			//
+			// Secondary Element(s)
+			//
 			if (Random.Range (0, 20) == 20)
 				tmp.wood = Random.Range (0, tmp.water);
+
+			//
+			// Groundlevel
 			tmp.ground = 400 - tmp.water;
+
 			tmp.name = gx + "," + gy + "," + gz;
 			tmp.elevation = 0;
-		} else if (leEle == metal) {
+		} 
+		//			//
+		//	Metal	//
+		//			//
+		else if (leEle == metal) {
 			tile = Instantiate (Resources.Load (tiles [3]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
 			Tile tmp = tile.GetComponent<Tile> ();
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
 
+			//
+			// Main Element
+			//
 			int dice = Dice (32);
 			if (dice == 32)
 				tmp.metal += Random.Range (2000, 2800);
@@ -159,6 +218,9 @@ public class MapGen : Unarou {
 			else
 				tmp.metal = metal;
 
+			//
+			// Secondary Element
+			//
 			dice = Dice (32);
 			if (dice == 32)
 				tmp.ground = Random.Range (600, 1000);
@@ -171,26 +233,26 @@ public class MapGen : Unarou {
 
 			tmp.name = gx + "," + gy + "," + gz;
 			tmp.elevation = tmp.ground + Mathf.FloorToInt (tmp.metal / 2) - 400;
-		} else if (leEle == fire) {
+		} 
+		//			//
+		//	Fire	//
+		//			//
+		else if (leEle == fire) {
 			tile = Instantiate (Resources.Load (tiles [1]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
 			Tile tmp = tile.GetComponent<Tile> ();
 			tmp.x = gx;
 			tmp.y = gy;
 			tmp.z = gz;
-			
+
+			//
+			// Main Element
+			//
 			tmp.fire = Random.Range (0, 500);
 
-			int dice = Dice (32);
-			if (dice == 32)
-				tmp.ground += Random.Range (900 - tmp.ground, 1000);
-			else if (dice < 32 && dice >= 25)
-				tmp.ground += Random.Range (700 - tmp.ground, 899);
-			else if (dice < 25 && dice >= 15)
-				tmp.ground += Random.Range (500 - tmp.ground, 699);
-			else if (dice < 15)
-				tmp.ground += Random.Range (400 - tmp.ground, 499);
-
-			dice = Dice (6);
+			//
+			// Secondary Element
+			//
+			int dice = Dice (6);
 			if (dice == 6) {
 				dice = Dice (32);
 				if (dice == 32)
@@ -202,6 +264,18 @@ public class MapGen : Unarou {
 				else if (dice < 15 && dice >= 5)
 					tmp.wood = Random.Range (0, 299);
 			}
+
+			//
+			// Groundlevel
+			dice = Dice (32);
+			if (dice == 32)
+				tmp.ground += Random.Range (900 - tmp.ground, 1000);
+			else if (dice < 32 && dice >= 25)
+				tmp.ground += Random.Range (700 - tmp.ground, 899);
+			else if (dice < 25 && dice >= 15)
+				tmp.ground += Random.Range (500 - tmp.ground, 699);
+			else if (dice < 15)
+				tmp.ground += Random.Range (400 - tmp.ground, 499);
 			
 			tmp.name = gx + "," + gy + "," + gz;
 			tmp.elevation = tmp.ground + Mathf.RoundToInt (tmp.metal / 2) - 400;
@@ -237,4 +311,15 @@ public class MapGen : Unarou {
 		else
 			return true;
 	}
+
+/*	void setup(int eleNum, string main, string secondary, bool groundNotMainSecondary) {
+		tile = Instantiate (Resources.Load (tiles [0]), new Vector3 (x, y, 0), transform.rotation) as GameObject;
+		Tile tmp = tile.GetComponent<Tile> ();
+
+		tmp.x = gx;
+		tmp.y = gy;
+		tmp.z = gz;
+
+		int mainEle, secondaryEle, levelingGround;
+*///}
 }

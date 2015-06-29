@@ -107,7 +107,7 @@ public class Tile : Unarou {
 			foreach (GameObject h in ActionHexes) {
 				Tile tmp = h.GetComponent<Tile> ();
 				if (Distance (selected.x, selected.y, selected.z, tmp.x, tmp.y, tmp.z) <= selected.CR && Action && !tmp.IsActioned) {
-					h.GetComponent<SpriteRenderer> ().sprite = MA [1];
+					h.GetComponent<SpriteRenderer> ().sprite = MA [3];
 				} 
 //				else 
 //					origins (tmp, false);
@@ -128,7 +128,7 @@ public class Tile : Unarou {
 			foreach (GameObject h in ActionHexes) {
 				Tile tmp = h.GetComponent<Tile> ();
 				if (Action && !tmp.IsActioned) {
-					h.GetComponent<SpriteRenderer> ().sprite = MA [1];
+					h.GetComponent<SpriteRenderer> ().sprite = MA [3];
 //					Debug.Log (h.GetComponent<SpriteRenderer> ().sprite);
 				}
 //				else
@@ -195,7 +195,7 @@ public class Tile : Unarou {
 			origins (this, false);
 
 		if (IsActioned)
-			GetComponent<SpriteRenderer> ().sprite = MA[2];
+			GetComponent<SpriteRenderer> ().sprite = MA[4];
 
 		foreach (GameObject t in TileList) {
 			if (t.GetComponent<Tile> ().visionLevel > 0) {
@@ -295,6 +295,7 @@ public class Tile : Unarou {
 
 			if (selected.MP == 0 && selected.AP != 0) {
 				selected.AP--;
+				Moving = false;
 			} else 
 				MoveCheck ();
 
@@ -309,10 +310,10 @@ public class Tile : Unarou {
 		if (Action 																	&& 
 			selected.AP > 0 														&&
 			selected.CAC < selected.CA												&&
-		    GetComponent<SpriteRenderer> ().sprite == MA [1]					) {
+		    GetComponent<SpriteRenderer> ().sprite == MA [3]					) {
 
 			selected.CAC++;
-			GetComponent<SpriteRenderer> ().sprite = MA [2];
+			GetComponent<SpriteRenderer> ().sprite = MA [4];
 			IsActioned = true;
 			actionTurn = 1;
 			ActionedBy = SelectedChar;

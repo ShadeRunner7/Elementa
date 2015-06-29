@@ -1,16 +1,16 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Cam : MonoBehaviour {
-
+	
 	GameObject target;
 	public Rigidbody2D rb;
 	float speed;
-
+	
 	bool up = false,
-		 down = false,
-		 right = false,
-		 left = false;
+	down = false,
+	right = false,
+	left = false;
 	
 	// Use this for initialization
 	void Start () {
@@ -43,12 +43,12 @@ public class Cam : MonoBehaviour {
 		if (!up && !down && !left && !right)
 			rb.velocity = new Vector2(0, 0);
 	}
-
+	
 	public void SetTarget(GameObject a) {
 		target = a;
 		speed = target.GetComponent<Character> ().LoS;
 		transform.position = new Vector3 (target.transform.position.x, target.transform.position.y, transform.position.z);
 		if (target.GetComponent<Character> ().LoS != 0)
-			GetComponent<Camera> ().orthographicSize = target.GetComponent<Character> ().LoS + 1 / (float)target.GetComponent<Character> ().LoS;
+			GetComponent<Camera> ().orthographicSize = speed + .5f - speed / 10;
 	}
 }

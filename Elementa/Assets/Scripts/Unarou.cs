@@ -38,10 +38,13 @@ public class Unarou : MonoBehaviour {
 //		if (!GameObject.Find ("Flora"))
 			Instantiate (Resources.Load ("Characters/Flora"), new Vector3 (x * .75f, (y - z) * .45f, 0), transform.rotation).name = "Flora";
 		GameObject.Find ("Flora").GetComponent<Character> ().Position (x, y, z);
-		
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		CharacterList = GameObject.FindGameObjectsWithTag ("Player");
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		while (CharacterList == null)
+			CharacterList = GameObject.FindGameObjectsWithTag ("Player");
+		
+//		Debug.Log (CharacterList == null);
+
 		foreach (GameObject character in CharacterList) {
 			character.GetComponent<Skills> ().SetUp ();
 		}
@@ -61,12 +64,13 @@ public class Unarou : MonoBehaviour {
 
 		MapGeneration (0);
 		
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
+//		Debug.Log (PlayerTile);
 
-		foreach (GameObject character in CharacterList) {
-			character.GetComponent<Character> ().PlayerSetUp ();
+		foreach (GameObject c in CharacterList) {
+			c.GetComponent<Character> ().PlayerSetUp ();
 		}
 
 		MapGeneration (1);

@@ -1,12 +1,14 @@
 fileFormatVersion: 2
 guid: def12c9dda66588469c2375a175d6335
-timeCreated: 1434536608
+timeCreated: 1435139925
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: MATiles_0
     21300002: MATiles_1
     21300004: MATiles_2
+    21300006: MATiles_3
+    21300008: MATiles_4
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -56,7 +58,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 95
         width: 105
         height: 95
       alignment: 0
@@ -66,7 +68,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 105
-        y: 0
+        y: 95
         width: 105
         height: 95
       alignment: 0
@@ -76,6 +78,26 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 210
+        y: 95
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: MATiles_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 105
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: MATiles_4
+      rect:
+        serializedVersion: 2
+        x: 105
         y: 0
         width: 105
         height: 95

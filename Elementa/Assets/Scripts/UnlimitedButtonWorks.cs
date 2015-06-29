@@ -4,38 +4,43 @@ using UnityEngine.UI;
 
 public class UnlimitedButtonWorks : Unarou {
 
-	static Text buttonT, MP, AP;
+	static Text buttonT, MP, AP, LP, UL, PL, DL;
 	static GameObject cam, me0, me1, me2, me3;
 	static int k;
-	Button test;
+	static Button test, me4, me5, me6, me7;
 
 	// Use this for initialization
-	void Start () {	
-		if (name == "PlayerB") {			
-			k = 0;
-			buttonT = transform.FindChild ("PlayerBText").GetComponent<Text> ();
-			MP = transform.FindChild ("MPText").GetComponent<Text> ();
-			AP = transform.FindChild ("APText").GetComponent<Text> ();
-			cam = GameObject.Find ("Main Camera");
-			
-			me0 = GameObject.Find ("Canvas/UtilityB");
-			me1 = GameObject.Find ("Canvas/PowerB");
-			me2 = GameObject.Find ("Canvas/DefenceB");
-			me3 = GameObject.Find ("Canvas/LevelUpPanel");
+	void Start () {				
+		k = 0;
+		buttonT = GameObject.Find ("Canvas/PlayerB/PlayerBText").GetComponent<Text> ();
+		MP = GameObject.Find ("Canvas/PlayerB/MPText").GetComponent<Text> ();
+		AP = GameObject.Find ("Canvas/PlayerB/APText").GetComponent<Text> ();
+		LP = GameObject.Find ("Canvas/LevelUpPanel/Panel/Text").GetComponent<Text> ();
+		UL = GameObject.Find ("Canvas/UtilityB/Panel/Text").GetComponent<Text> ();
+		PL = GameObject.Find ("Canvas/PowerB/Panel/Text").GetComponent<Text> ();
+		DL = GameObject.Find ("Canvas/DefenceB/Panel/Text").GetComponent<Text> ();
 
-			SelectChar ();
-		} else {
-			me0 = GameObject.Find ("Canvas/UtilityB");
-			me1 = GameObject.Find ("Canvas/PowerB");
-			me2 = GameObject.Find ("Canvas/DefenceB");
-			me3 = GameObject.Find ("Canvas/LevelUpPanel");
-		}
-	}
+		cam = GameObject.Find ("Main Camera");
+		
+		me0 = GameObject.Find ("Canvas/UtilityB");
+		me1 = GameObject.Find ("Canvas/PowerB");
+		me2 = GameObject.Find ("Canvas/DefenceB");
+		me3 = GameObject.Find ("Canvas/LevelUpPanel");
+		me4 = GameObject.Find ("Canvas/PlayerB").GetComponent<Button> ();
+		me5 = GameObject.Find ("Canvas/EndTurn").GetComponent<Button> ();
+		me6 = GameObject.Find ("Canvas/MoveB").GetComponent<Button> ();
+		me7 = GameObject.Find ("Canvas/ActionB").GetComponent<Button> ();
+		
+		SelectChar ();	
+		
+/*		me0 = GameObject.Find ("Canvas/UtilityB");
+		me1 = GameObject.Find ("Canvas/PowerB");
+		me2 = GameObject.Find ("Canvas/DefenceB");
+		me3 = GameObject.Find ("Canvas/LevelUpPanel");
+*/	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (Moving)
-			GameObject.Find ("Canvas/MoveB").GetComponent<Button> ().IsActive ();
 	}
 
 	internal void ChangeTexts() {
@@ -44,6 +49,11 @@ public class UnlimitedButtonWorks : Unarou {
 		else
 			MP.text = selected.MaxMP + "+" + selected.eMP;
 		AP.text = selected.AP.ToString ();
+		
+		LP.text = selected.levelpoints.ToString ();
+		UL.text = selected.UtilityLvl.ToString ();
+		PL.text = selected.PowerLvl.ToString ();
+		DL.text = selected.DefenceLvl.ToString ();
 	}
 
 	public void SelectChar () {
@@ -95,7 +105,7 @@ public class UnlimitedButtonWorks : Unarou {
 			Moving = true;
 		} else {
 			Moving = false;
-			if (selected.Moved) {
+			if (selected.Moved && selected.AP > 0) {
 				selected.AP--;
 				selected.Moved = false;
 			}
@@ -136,13 +146,27 @@ public class UnlimitedButtonWorks : Unarou {
 			if (name == "DefenceB")
 				selected.DefenceLvl++;
 			selected.levelpoints--;
-			if (selected.levelpoints == 0 ){
-				me0.SetActive (false);
-				me1.SetActive (false);
-				me2.SetActive (false);
-				me3.SetActive (false);
+			if (selected.levelpoints == 0) {
+				StartCoroutine ("Hide");
 			}
 		}
+		ChangeTexts ();
+	}
+
+	IEnumerator Hide() {
+		me4.interactable = false;
+		me5.interactable = false;
+		me6.interactable = false;
+		me7.interactable = false;
+		yield return new WaitForSeconds (1);
+		me0.SetActive (false);
+		me1.SetActive (false);
+		me2.SetActive (false);
+		me3.SetActive (false);
+		me4.interactable = true;
+		me5.interactable = true;
+		me6.interactable = true;
+		me7.interactable = true;
 	}
 
 	public void EndTurn () {
@@ -150,6 +174,15 @@ public class UnlimitedButtonWorks : Unarou {
 		Action = false;
 		foreach (GameObject chara in CharacterList) {
 			Character tmp = chara.GetComponent<Character> ();
+			
+			tmp.LoS = Mathf.Min (2 + (int)Mathf.Floor (tmp.UtilityLvl * .2f), 7);
+			tmp.CR = tmp.LoS - 1;
+			tmp.MaxMP = 1 + (int)Mathf.Floor (tmp.UtilityLvl * .2f);
+			tmp.MaxAP = 1 + Mathf.Min ((int)Mathf.Floor (tmp.UtilityLvl * .1f), 3);
+			
+			tmp.CA = 1 + (int)Mathf.Floor (tmp.PowerLvl * .2f);
+			tmp.PWR = 10 + tmp.PowerLvl;
+
 			if (tmp.MP < tmp.MaxMP) 
 				tmp.MP = tmp.MaxMP;
 			else if (tmp.MP == tmp.MaxMP && tmp.eMP <= 57) 
@@ -157,14 +190,6 @@ public class UnlimitedButtonWorks : Unarou {
 			tmp.AP = tmp.MaxAP;
 			tmp.LTCAC = tmp.CAC;
 			tmp.CAC = 0;
-			
-			tmp.LoS = Mathf.Min (2 + (int)Mathf.Floor (tmp.UtilityLvl * .2f), 7);
-			tmp.CR = tmp.LoS - 1;
-			tmp.MaxMP = 1 + (int)Mathf.Floor (tmp.UtilityLvl * .2f);
-			tmp.MaxAP = 1 + Mathf.Min ((int)Mathf.Floor (tmp.UtilityLvl * .1f), 3);
-
-			tmp.CA = 1 + (int)Mathf.Floor (tmp.PowerLvl * .2f);
-			tmp.PWR = 10 + tmp.PowerLvl;
 		}
 		ChangeTexts ();
 
@@ -176,6 +201,9 @@ public class UnlimitedButtonWorks : Unarou {
 			}
 		
 		k = 0;
+
+		MapGeneration (1);
+
 		SelectChar ();
 	}
 }
