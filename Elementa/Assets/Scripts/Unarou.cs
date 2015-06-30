@@ -9,6 +9,7 @@ public class Unarou : MonoBehaviour {
 	protected static GameObject SelectedChar;
 	protected static bool Moving = false;
 	protected static bool Action = false;
+	protected static bool NewMap = false;
 	protected static Character selected;
 	protected static string[] tiles = {
 		"Tiles/WoodTile", "Tiles/FireTile", "Tiles/GroundTile", "Tiles/MetalTile", "Tiles/WaterTile"
@@ -99,22 +100,21 @@ public class Unarou : MonoBehaviour {
 
 	protected void MapGeneration (int xenomorph) {
 		if (xenomorph == 0 || xenomorph == 1) {
-			MapGene.GetComponent<MapGen> ().GenerateMap();
-			TileList = GameObject.FindGameObjectsWithTag ("NewTile");
-			foreach (GameObject MapTile in TileList) 
-				MapTile.GetComponent <Tile> ().SetUp ();
+			MapGene.GetComponent<MapGen> ().GenerateMap ();
+			if (NewMap) {
+				TileList = GameObject.FindGameObjectsWithTag ("NewTile");
+				foreach (GameObject MapTile in TileList) 
+					MapTile.GetComponent <Tile> ().SetUp ();
+				NewMap = false;
+			}
 		}
 
 		if (xenomorph == 1) {
 			TileList = GameObject.FindGameObjectsWithTag ("Tile");
 			foreach (GameObject MapTile in TileList) {
 				MapTile.GetComponent <Tile> ().AllCheck ();
-				MapTile.GetComponent <Tile> ().VisionCheck ();
+//				MapTile.GetComponent <Tile> ().VisionCheck ();
 			}
 		}
 	}
-
-
-
-
 }

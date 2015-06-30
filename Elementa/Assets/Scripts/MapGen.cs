@@ -43,6 +43,7 @@ public class MapGen : Unarou {
 						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS && !tmp) {						
 //							Debug.Log ("Generating " + x + " " + y + ", " + gx + "," + gy + "," + gz);
 							TileGenerator (x, y, gx, gy, gz);
+							NewMap = true;
 //							DC++;
 						}
 					}

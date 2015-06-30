@@ -132,6 +132,7 @@ public class UnlimitedButtonWorks : Unarou {
 				}
 			}
 			Action = true;
+			TileList = GameObject.FindGameObjectsWithTag ("Tile");
 		} else {
 			Action = false;
 			if (selected.Did) {
@@ -206,7 +207,7 @@ public class UnlimitedButtonWorks : Unarou {
 			foreach (GameObject hh in h) {
 				hh.GetComponent<Tile> ().actionTurn--;
 				hh.GetComponent<Tile> ().AllCheck ();
-				hh.GetComponent<Tile> ().VisionCheck ();
+//				hh.GetComponent<Tile> ().VisionCheck ();
 			}
 		}
 
