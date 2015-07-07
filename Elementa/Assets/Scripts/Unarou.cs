@@ -76,7 +76,7 @@ public class Unarou : MonoBehaviour {
 			MapGene = Instantiate (Resources.Load ("MapGen")) as GameObject;
 		MapGene.name = "MapGen";
 
-		MapGeneration (0);
+		MapGeneration (3);
 		
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -99,22 +99,39 @@ public class Unarou : MonoBehaviour {
 	}
 
 	protected void MapGeneration (int xenomorph) {
-		if (xenomorph == 0 || xenomorph == 1) {
-			MapGene.GetComponent<MapGen> ().GenerateMap ();
+		if (xenomorph == 0 || xenomorph == 1 || xenomorph == 3) {
+			if (xenomorph == 3)
+				MapGene.GetComponent<MapGen> ().GenerateMap (50);
+			else
+				MapGene.GetComponent<MapGen> ().GenerateMap (0);
+//			int count = 0;
 			if (NewMap) {
 				TileList = GameObject.FindGameObjectsWithTag ("NewTile");
-				foreach (GameObject MapTile in TileList) 
+				foreach (GameObject MapTile in TileList) {
 					MapTile.GetComponent <Tile> ().SetUp ();
+//					count++;
+				}
+				TileList = GameObject.FindGameObjectsWithTag ("Tile");
 				NewMap = false;
+//				Debug.Log (count);
 			}
 		}
 
 		if (xenomorph == 1) {
-			TileList = GameObject.FindGameObjectsWithTag ("Tile");
 			foreach (GameObject MapTile in TileList) {
 				MapTile.GetComponent <Tile> ().AllCheck ();
+//				if (MapTile.GetComponent<Tile> ().OnLoS == -CharacterList.Length)
+//					MapTile.GetComponent<SpriteRenderer> ().color = Color.grey;
 //				MapTile.GetComponent <Tile> ().VisionCheck ();
 			}
 		}
+	}
+	
+	internal void VisionCheck (GameObject t) {
+		t.GetComponent<Tile> ().AllCheck ();
+		if (t.GetComponent<Tile> ().OnLoS == -CharacterList.Length) {
+			t.GetComponent<SpriteRenderer> ().color = Color.grey;
+		} else
+			t.GetComponent<SpriteRenderer> ().color = Color.white;
 	}
 }

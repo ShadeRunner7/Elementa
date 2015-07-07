@@ -16,13 +16,16 @@ public class MapGen : Unarou {
 	void Update () {
 	}
 
-	internal void GenerateMap () {
+	internal void GenerateMap (int xenomorph) {
 		foreach (GameObject c in CharacterList) {
 			cx = c.GetComponent<Character> ().x;
 			cy = c.GetComponent<Character> ().y;
 			cz = c.GetComponent<Character> ().z;
-			LoS = c.GetComponent<Character> ().LoS + 1;
+			if (xenomorph == 0)
+				LoS = c.GetComponent<Character> ().LoS + 1;
+			else LoS = xenomorph;
 
+//			Debug.Log (xenomorph + " " + LoS);
 //			Debug.Log (c + ", " + cx + "," + cy + "," + cz);
 //			int DC = 0;
 
@@ -52,8 +55,14 @@ public class MapGen : Unarou {
 			}
 //			Debug.Log (DC + " tiles generated");
 		}
-			
-/*		for (gx = 0; gx < 50; gx++) {				
+		/*
+		//////////////////////////
+		//						//
+		//	Alternative Method	//
+		//						//
+		//////////////////////////
+
+		for (gx = 0; gx < 50; gx++) {				
 			gy = -gx / 2;
 			gz = -(gx + 1) / 2;
 			x = gx * .75f;
@@ -63,7 +72,9 @@ public class MapGen : Unarou {
 				gz--;
 			}
 		}
-*/	}
+
+		//////////////////////////*/
+	}
 
 	void TileGenerator(float x, float y, int gx, int gy, int gz) {
 		int wood = Dice (32), fire = Dice (32), ground = Dice (32), metal = Dice (32), water = Dice (32), leEle = 0;

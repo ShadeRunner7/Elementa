@@ -217,16 +217,16 @@ Terrain
 	Elevation
 		+-50 Ground point difference
 			+1 Required Movement point
-			Cannot see to top.
+			-Removed- Cannot see to top.
 		+-100 Ground point difference
 			Passable downhill
 				-1 required Movement point
 			Impassable uphill without Wallclimb
 		+-150 Ground point difference
 			Normally impassable without Wallclimb
-		+-200+ Ground point difference
-			Cannot see down without Line of sight level 6
-				Each -50 points require one more level of LoS
+		-Removed- +-200+ Ground point difference
+		-Removed- 	Cannot see down without Line of sight level 6
+		-Removed- 		Each -50 points require one more level of LoS
 			
 	Debris
 		Each 2 Metal points equal to 1 Ground in elevation

@@ -19,8 +19,8 @@ public class Tile : Unarou {
 	public GameObject adj0, adj1, adj2, adj3, adj4, adj5;
 	public GameObject adjH0, adjH1, adjH2, adjH3, adjH4, adjH5;	
 	public GameObject ActionedBy;
-	internal List<Tile> adje, seen;
-	static List<GameObject> ActionHexes;
+	internal List<Tile> adje;
+	static List<GameObject> ActionHexes, seen;
 	public int MCALN;	//MyCastAreaListNumber
 
 	// Use this for initialization
@@ -173,51 +173,7 @@ public class Tile : Unarou {
 			effects ();
 	}
 
-
-/*	internal void VisionCheck () {
-		ActionHexes = new List<GameObject> ();
-		if (OnLoS > -CharacterList.Length) {
-			foreach (GameObject player in CharacterList) {
-				Character tmp0 = player.GetComponent<Character> ();
-			
-				bool u200p = elevation - tmp0.ele < 200 + 50 * (Mathf.Max (tmp0.LoS, 4) - 4);
-				bool io50 = elevation - tmp0.ele >= 50;
-				bool u50 = elevation - tmp0.ele < 50;
-				bool om200m = elevation - tmp0.ele > -200 - 50 * (Mathf.Max (tmp0.LoS, 4) - 4);
-				int d = Distance (tmp0.x, tmp0.y, tmp0.z, x, y, z);
-			
-				if (d <= tmp0.LoS) {
-					if (visionLevel == 0) {
-						if (u200p && io50) {
-							visionLevel = 1;
-						}
-						if (u50 && om200m) {
-							visionLevel = 2;
-						}
-					} else if (visionLevel == 1 && u50 && om200m) {
-						visionLevel = 2;
-					} else if (visionLevel == 2 && OnLoS == -CharacterList.Length + 2 && (io50 || !om200m)) {
-						visionLevel = 1;
-					}
-				}
-			}
-		} else if (visionLevel == 2)
-			visionLevel = 1;
-
-		if (!(NextToPlayer && Moving))
-			origins (this, false);
-
-		if (IsActioned)
-			GetComponent<SpriteRenderer> ().sprite = MA[4];
-
-		foreach (GameObject t in TileList) {
-			if (t.GetComponent<Tile> ().visionLevel > 0) {
-				ActionHexes.Add(t);
-			}
-		}
-	}
-
-*/	void origins (Tile a, bool b) {
+	void origins (Tile a, bool b) {
 		if (!b)
 			a.GetComponent<SpriteRenderer> ().sprite = a.original;
 		else
@@ -290,7 +246,8 @@ public class Tile : Unarou {
 		 	 GetComponent<SpriteRenderer> ().sprite == MA [1]	) ) {
 
 			foreach (Tile t in PlayerTile.GetComponent<Tile> ().adje)
-				t.GetComponent<SpriteRenderer> ().sprite = t.original;
+				if (t)
+					t.GetComponent<SpriteRenderer> ().sprite = t.original;
 
 			SelectedChar.transform.position = transform.position;
 			selected.Position (x, y, z);
@@ -298,7 +255,8 @@ public class Tile : Unarou {
 			
 			PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);			
 			foreach (Tile t in PlayerTile.GetComponent<Tile> ().adje)
-				t.AllCheck ();
+				if (t)
+					t.AllCheck ();
 			PlayerTile.GetComponent<Tile> ().HasPlayer = true;
 
 			selected.MP -= MPC;
@@ -319,7 +277,7 @@ public class Tile : Unarou {
 			} else 
 				MoveCheck ();
 
-			SelectedChar.GetComponent<Skills> ().AddExp ((eMPC + MPC) * 100);
+			SelectedChar.GetComponent<Skills> ().AddExp ((eMPC + MPC) * 1000, 0);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,23 +321,27 @@ public class Tile : Unarou {
 	void effects () {
 		Character tmp = ActionedBy.GetComponent<Character> ();
 		EffectedPower = (int)Mathf.Floor (tmp.LTPWR / CastAreaList[MCALN].Count);
-		ActionedBy.GetComponent<Skills> ().AddExp (EffectedPower * 100);
+		ActionedBy.GetComponent<Skills> ().AddExp (EffectedPower * 100, 0);
 		IsActioned = false;
 		ActionedBy = null;
 	}
 
 	internal void IThinkThisIsGonnaBeABadIdea () {		
-		seen = new List<Tile> ();
+		seen = new List<GameObject> ();
 		foreach (GameObject t in TileList) {
 			if (t.GetComponent<Tile> ().OnLoS > -CharacterList.Length)
-				seen.Add(t.GetComponent<Tile>());
+				seen.Add(t);
 		}
 
-		foreach (Tile h in seen) {
-			h.AllCheck ();
-//			h.VisionCheck ();
+//		int count = 0;
+		foreach (GameObject h in seen) {
+			Tile tmp = h.GetComponent<Tile> ();
+//			tmp.AllCheck ();
+			VisionCheck (h);
+//			count++;
 			if (!(NextToPlayer && Moving))
-				origins (h, h.IsActioned);
+				origins (tmp, tmp.IsActioned);
 		}
+//		Debug.Log (count + " " + TileList.Length);
 	}
 }

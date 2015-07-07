@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Skills : Unarou {
-	
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -24,8 +24,10 @@ public class Skills : Unarou {
 	void Update () {;
 	}
 
-	internal void AddExp (int a) {
-		GetComponent<Character> ().EXP += a;
+	internal void AddExp (int a, int xenomorph) {
+		if (xenomorph == 0)
+			GetComponent<Character> ().EXP += a;
+		if (xenomorph == 1)
 		while (GetComponent<Character> ().EXP >= selected.Level * 10) {
 			GetComponent<Character> ().EXP -= selected.Level * 10;
 			GetComponent<Character> ().Level++;

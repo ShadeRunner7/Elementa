@@ -32,13 +32,8 @@ public class UnlimitedButtonWorks : Unarou {
 		me6 = GameObject.Find ("Canvas/MoveB").GetComponent<Button> ();
 		me7 = GameObject.Find ("Canvas/ActionB").GetComponent<Button> ();
 		
-		SelectChar ();	
-		
-/*		me0 = GameObject.Find ("Canvas/UtilityB");
-		me1 = GameObject.Find ("Canvas/PowerB");
-		me2 = GameObject.Find ("Canvas/DefenceB");
-		me3 = GameObject.Find ("Canvas/LevelUpPanel");
-*/	}
+		SelectChar ();
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -83,7 +78,7 @@ public class UnlimitedButtonWorks : Unarou {
 		buttonT.text = selected.name;
 		cam.SendMessageUpwards ("SetTarget", SelectedChar, SendMessageOptions.DontRequireReceiver);
 		
-		if (selected.levelpoints > 0 && selected.MP >= selected.MaxMP && selected.AP == selected.MaxAP) {
+		if (selected.levelpoints > 0) {
 			me0.SetActive (true);
 			me1.SetActive (true);
 			me2.SetActive (true);
@@ -148,7 +143,7 @@ public class UnlimitedButtonWorks : Unarou {
 	}
 	
 	public void AddLevel () {
-		if (selected.levelpoints != 0) {
+		while (selected.levelpoints != 0) {
 			if (name == "UtilityB")
 				selected.UtilityLvl++;
 			if (name == "PowerB")
@@ -200,6 +195,7 @@ public class UnlimitedButtonWorks : Unarou {
 			tmp.MP = tmp.MaxMP;
 			tmp.AP = tmp.MaxAP;
 			tmp.CAC = 0;
+			chara.GetComponent<Skills> ().AddExp (0, 1);
 		}
 		ChangeTexts ();
 
@@ -212,8 +208,9 @@ public class UnlimitedButtonWorks : Unarou {
 		}
 
 		int LC = 0;
-		foreach (GameObject c in CharacterList)			
+		foreach (GameObject c in CharacterList) {
 			LC += c.GetComponent<Character> ().AP;
+		}
 
 		CastAreaList = new List<GameObject>[LC];
 		for (CAL = 0; CAL < LC; CAL++) 
@@ -224,7 +221,7 @@ public class UnlimitedButtonWorks : Unarou {
 		k = 0;
 
 		MapGeneration (1);
-
+//		Debug.Log (TileList.Length);
 		SelectChar ();
 	}
 }
