@@ -220,7 +220,7 @@ public class UnlimitedButtonWorks : Unarou {
 
 		k = 0;
 
-		MapGeneration (1);
+		MapGeneration (3);
 //		Debug.Log (TileList.Length);
 		SelectChar ();
 	}

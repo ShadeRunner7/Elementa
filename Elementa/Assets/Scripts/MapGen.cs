@@ -48,7 +48,9 @@ public class MapGen : Unarou {
 							TileGenerator (x, y, gx, gy, gz);
 							NewMap = true;
 //							DC++;
+							seen.Add (new GameObject ());
 						}
+						else seen.Add (tmp);
 					}
 					gz--;
 				}

@@ -20,7 +20,7 @@ public class Tile : Unarou {
 	public GameObject adjH0, adjH1, adjH2, adjH3, adjH4, adjH5;	
 	public GameObject ActionedBy;
 	internal List<Tile> adje;
-	static List<GameObject> ActionHexes, seen;
+	static List<GameObject> ActionHexes;
 	public int MCALN;	//MyCastAreaListNumber
 
 	// Use this for initialization
@@ -150,7 +150,7 @@ public class Tile : Unarou {
 		}
 	}
 
-	internal void AllCheck () {
+	internal void AllCheck () {	//USE AT END OF TURN
 		int count = 0;
 		foreach (GameObject c in CharacterList) {
 			if (c.transform.position == transform.position) {
@@ -263,8 +263,9 @@ public class Tile : Unarou {
 			selected.eMP = 0;
 			selected.AP -= APC;
 			selected.Moved = true;
-			
-			MapGeneration (0);
+
+			seen = new List<GameObject> ();
+			MapGeneration (2);
 
 			IThinkThisIsGonnaBeABadIdea ();
 
@@ -327,13 +328,13 @@ public class Tile : Unarou {
 	}
 
 	internal void IThinkThisIsGonnaBeABadIdea () {		
-		seen = new List<GameObject> ();
+/*		seen = new List<GameObject> ();
 		foreach (GameObject t in TileList) {
 			if (t.GetComponent<Tile> ().OnLoS > -CharacterList.Length)
 				seen.Add(t);
 		}
 
-//		int count = 0;
+*///	int count = 0;
 		foreach (GameObject h in seen) {
 			Tile tmp = h.GetComponent<Tile> ();
 //			tmp.AllCheck ();
