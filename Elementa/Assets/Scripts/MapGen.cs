@@ -18,20 +18,25 @@ public class MapGen : Unarou {
 
 	internal void GenerateMap (int xenomorph) {
 		foreach (GameObject c in CharacterList) {
-			cx = c.GetComponent<Character> ().x;
-			cy = c.GetComponent<Character> ().y;
-			cz = c.GetComponent<Character> ().z;
-			if (xenomorph == 0)
-				LoS = c.GetComponent<Character> ().LoS + 1;
-			else LoS = xenomorph;
+			if (xenomorph == 0) {
+				LoS = selected.LoS + 1;
+				cx = selected.x;
+				cy = selected.y;
+				cz = selected.z;
+			} else {
+				cx = c.GetComponent<Character> ().x;
+				cy = c.GetComponent<Character> ().y;
+				cz = c.GetComponent<Character> ().z;
+				LoS = xenomorph;
+			}
 
 //			Debug.Log (xenomorph + " " + LoS);
-//			Debug.Log (c + ", " + cx + "," + cy + "," + cz);
+//			Debug.Log (cx + "," + cy + "," + cz);
 //			int DC = 0;
 
 			for (gx = cx - LoS; gx <= cx + LoS; gx++) {
-				gy = -gx / 2 - Mathf.Abs(cy + LoS);	
-				gz = -(gx + 1) / 2 + Mathf.Abs(cy + LoS);
+				gy = -gx / 2 - Mathf.Abs (cy + LoS);	
+				gz = -(gx + 1) / 2 + Mathf.Abs (cy + LoS);
 				x = gx * .75f;
 //				Debug.Log ("First for, cx = " + cx + ", gy = " + gy + ", x = " + x + ", cy = " + cy + ", LoS = " + LoS + ", cy + LoS = " + (cy + LoS));
 				for (; gy <= cy + LoS; gy++) {
@@ -48,13 +53,15 @@ public class MapGen : Unarou {
 							TileGenerator (x, y, gx, gy, gz);
 							NewMap = true;
 //							DC++;
-							seen.Add (new GameObject ());
+						} else if (tmp && xenomorph == 0) { 
+							seen.Add (tmp);
 						}
-						else seen.Add (tmp);
 					}
 					gz--;
 				}
 			}
+			if (xenomorph == 0)
+				break;
 //			Debug.Log (DC + " tiles generated");
 		}
 		/*
