@@ -264,7 +264,6 @@ public class Tile : Unarou {
 			selected.AP -= APC;
 			selected.Moved = true;
 
-			seen = new List<GameObject> ();
 			MapGeneration (2);
 
 			IThinkThisIsGonnaBeABadIdea ();
@@ -343,6 +342,6 @@ public class Tile : Unarou {
 			if (!(NextToPlayer && Moving))
 				origins (tmp, tmp.IsActioned);
 		}
-//		Debug.Log (count + " " + TileList.Length);
+		Debug.Log (seen.Count);
 	}
 }

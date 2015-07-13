@@ -18,21 +18,23 @@ public class MapGen : Unarou {
 
 	internal void GenerateMap (int xenomorph) {
 		foreach (GameObject c in CharacterList) {
-			if (xenomorph == 0) {
-				LoS = selected.LoS + 1;
-				cx = selected.x;
-				cy = selected.y;
-				cz = selected.z;
-			} else {
+//			if (xenomorph == 0) {
+//				LoS = selected.LoS + 1;
+//				cx = selected.x;
+//				cy = selected.y;
+//				cz = selected.z;
+//			} else {
 				cx = c.GetComponent<Character> ().x;
 				cy = c.GetComponent<Character> ().y;
 				cz = c.GetComponent<Character> ().z;
 				LoS = xenomorph;
-			}
+//			}
 
 //			Debug.Log (xenomorph + " " + LoS);
 //			Debug.Log (cx + "," + cy + "," + cz);
 //			int DC = 0;
+			if (c == SelectedChar)
+				seen = new List<GameObject> ();
 
 			for (gx = cx - LoS; gx <= cx + LoS; gx++) {
 				gy = -gx / 2 - Mathf.Abs (cy + LoS);	
@@ -53,15 +55,17 @@ public class MapGen : Unarou {
 							TileGenerator (x, y, gx, gy, gz);
 							NewMap = true;
 //							DC++;
-						} else if (tmp && xenomorph == 0) { 
+						} else if (tmp && xenomorph == 0 && c == SelectedChar) { 
 							seen.Add (tmp);
 						}
 					}
 					gz--;
 				}
 			}
-			if (xenomorph == 0)
-				break;
+//			Debug.Log (seen.Count);
+
+//			if (xenomorph == 0)
+//				break;
 //			Debug.Log (DC + " tiles generated");
 		}
 		/*

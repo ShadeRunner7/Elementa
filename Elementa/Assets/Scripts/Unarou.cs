@@ -101,7 +101,7 @@ public class Unarou : MonoBehaviour {
 
 	protected void MapGeneration (int xenomorph) {
 		if (xenomorph == 0)
-			MapGene.GetComponent<MapGen> ().GenerateMap (50);
+			MapGene.GetComponent<MapGen> ().GenerateMap (60);
 		else
 			MapGene.GetComponent<MapGen> ().GenerateMap (0);
 //			int count = 0;
@@ -111,7 +111,7 @@ public class Unarou : MonoBehaviour {
 				MapTile.GetComponent <Tile> ().SetUp ();
 //					count++;
 			}
-			TileList = GameObject.FindGameObjectsWithTag ("Tile");
+//			TileList = GameObject.FindGameObjectsWithTag ("Tile");
 			NewMap = false;
 //				Debug.Log (count);
 		}
