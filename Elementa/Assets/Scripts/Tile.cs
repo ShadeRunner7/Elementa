@@ -51,7 +51,7 @@ public class Tile : Unarou {
 		if (adj0 && adj1 && adj2 && adj3 && adj4 && adj5)
 			tag = "Tile";
 
-		if (tag == "NewTile")
+		if (tag == "NewTile" || OnLoS == -CharacterList.Length)
 			GetComponent<SpriteRenderer> ().color = Color.black;
 		else 
 			GetComponent<SpriteRenderer> ().color = Color.white;
@@ -337,7 +337,7 @@ public class Tile : Unarou {
 		foreach (GameObject h in seen) {
 			Tile tmp = h.GetComponent<Tile> ();
 //			tmp.AllCheck ();
-			VisionCheck (h);
+//			VisionCheck (h);
 //			count++;
 			if (!(NextToPlayer && Moving))
 				origins (tmp, tmp.IsActioned);

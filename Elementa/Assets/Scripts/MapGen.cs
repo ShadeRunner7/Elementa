@@ -16,10 +16,10 @@ public class MapGen : Unarou {
 	void Update () {
 	}
 
-	internal void GenerateMap (int xenomorph) {
-		foreach (GameObject c in CharacterList) {
-//			if (xenomorph == 0) {
-//				LoS = selected.LoS + 1;
+	internal void GenerateMap (int xenomorph, GameObject c) {
+			LoS = xenomorph;
+			if (xenomorph == 0) //{
+				LoS = selected.LoS + 1;
 //				cx = selected.x;
 //				cy = selected.y;
 //				cz = selected.z;
@@ -27,7 +27,6 @@ public class MapGen : Unarou {
 				cx = c.GetComponent<Character> ().x;
 				cy = c.GetComponent<Character> ().y;
 				cz = c.GetComponent<Character> ().z;
-				LoS = xenomorph;
 //			}
 
 //			Debug.Log (xenomorph + " " + LoS);
@@ -56,12 +55,13 @@ public class MapGen : Unarou {
 							NewMap = true;
 //							DC++;
 						} else if (tmp && xenomorph == 0 && c == SelectedChar) { 
-							seen.Add (tmp);
+//							seen.Add (tmp);
+							VisionCheck(tmp);
 						}
 					}
 					gz--;
 				}
-			}
+
 //			Debug.Log (seen.Count);
 
 //			if (xenomorph == 0)
