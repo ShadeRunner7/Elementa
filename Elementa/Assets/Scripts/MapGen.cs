@@ -1,73 +1,29 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class MapGen : Unarou {
 
 	GameObject tile, tmp;
 	float x, y;
-	int gx = 0, gy = 0, gz = 0, cx, cy, cz, LoS;
-
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	}
+	int gx = 0, gy = 0, gz = 0, cx, cy, cz, geneD;
 
 	internal void GenerateMap (int xenomorph, GameObject c) {
-			LoS = xenomorph;
-			if (xenomorph == 0) //{
-				LoS = selected.LoS + 1;
-//				cx = selected.x;
-//				cy = selected.y;
-//				cz = selected.z;
-//			} else {
-				cx = c.GetComponent<Character> ().x;
-				cy = c.GetComponent<Character> ().y;
-				cz = c.GetComponent<Character> ().z;
-//			}
+			geneD = xenomorph;
+			if (xenomorph == 0)
+				geneD = selected.LoS + 1;
+			cx = c.GetComponent<Character> ().x;
+			cy = c.GetComponent<Character> ().y;
+			cz = c.GetComponent<Character> ().z;
 
-//			Debug.Log (xenomorph + " " + LoS);
-//			Debug.Log (cx + "," + cy + "," + cz);
-//			int DC = 0;
 			if (c == SelectedChar)
 				seen = new List<GameObject> ();
 
-			for (gx = cx - LoS; gx <= cx + LoS; gx++) {
-				gy = -gx / 2 - Mathf.Abs (cy + LoS);	
-				gz = -(gx + 1) / 2 + Mathf.Abs (cy + LoS);
-				x = gx * .75f;
-//				Debug.Log ("First for, cx = " + cx + ", gy = " + gy + ", x = " + x + ", cy = " + cy + ", LoS = " + LoS + ", cy + LoS = " + (cy + LoS));
-				for (; gy <= cy + LoS; gy++) {
-					y = (gy - gz) * .45f;
-					if (y == 8.099999f)
-						y = 8.1f;
-					if (y == -8.099999f)
-						y = -8.1f;
-//					Debug.Log ("Second for, " + x + " " + y);
-					if (x >= 0 && y >= 0) {
-						tmp = GameObject.Find (gx + "," + gy + "," + gz);
-						if (Distance (cx, cy, cz, gx, gy, gz) <= LoS && !tmp) {						
-//							Debug.Log ("Generating " + x + " " + y + ", " + gx + "," + gy + "," + gz);
-							TileGenerator (x, y, gx, gy, gz);
-							NewMap = true;
-//							DC++;
-						} else if (tmp && xenomorph == 0 && c == SelectedChar) { 
-//							seen.Add (tmp);
-							VisionCheck(tmp);
-						}
-					}
-					gz--;
-				}
+		StartCoroutine("Sweep");
 
-//			Debug.Log (seen.Count);
-
-//			if (xenomorph == 0)
-//				break;
-//			Debug.Log (DC + " tiles generated");
-		}
+		Debug.Log ("-----" + c.name + ": Sweep -----");
+			
 		/*
 		//////////////////////////
 		//						//
@@ -87,8 +43,36 @@ public class MapGen : Unarou {
 		}
 
 		//////////////////////////*/
+	/// 
 	}
 
+	IEnumerator Sweep () {
+		SweepIsRunning = true;
+		for (gx = cx - geneD; gx <= cx + geneD; gx++) {
+			gy = -gx / 2 - Mathf.Abs (cy + geneD);	
+			gz = -(gx + 1) / 2 + Mathf.Abs (cy + geneD);
+			x = gx * .75f;
+			for (; gy <= cy + geneD; gy++) {
+				y = (gy - gz) * .45f;
+				if (y == 8.099999f)
+					y = 8.1f;
+				if (y == -8.099999f)
+					y = -8.1f;
+				if (x >= 0 && y >= 0) {
+					tmp = GameObject.Find (gx + "," + gy + "," + gz);
+					if (Distance (cx, cy, cz, gx, gy, gz) <= geneD && !tmp) {
+						TileGenerator (x, y, gx, gy, gz);
+						NewMap = true;
+						yield return new WaitForSeconds (DELAY);
+					}
+				}
+				gz--;
+			}
+		}
+		SweepIsRunning = false;
+//		return null;
+	}
+	
 	void TileGenerator(float x, float y, int gx, int gy, int gz) {
 		int wood = Dice (32), fire = Dice (32), ground = Dice (32), metal = Dice (32), water = Dice (32), leEle = 0;
 		while (MultipleMaxes (wood, fire, ground, metal, water)) {

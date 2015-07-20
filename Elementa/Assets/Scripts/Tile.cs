@@ -23,6 +23,8 @@ public class Tile : Unarou {
 	static List<GameObject> ActionHexes;
 	public int MCALN;	//MyCastAreaListNumber
 
+//	int meh = 0;
+
 	// Use this for initialization
 	void Start () {	
 	}
@@ -46,15 +48,17 @@ public class Tile : Unarou {
 
 
 		ElevationDiff (); //ADJES SET
-		AllCheck ();
+		ProxNEffCheck ();
 		
-		if (adj0 && adj1 && adj2 && adj3 && adj4 && adj5)
+		if (adj0 && adj1 && adj2 && adj3 && adj4 && adj5)// || meh == 1)
 			tag = "Tile";
 
 		if (tag == "NewTile" || OnLoS == -CharacterList.Length)
 			GetComponent<SpriteRenderer> ().color = Color.black;
 		else 
 			GetComponent<SpriteRenderer> ().color = Color.white;
+
+//		meh++;
 	}
 
 	// Update is called once per frame
@@ -107,50 +111,7 @@ public class Tile : Unarou {
 		}
 	}
 
-	internal void ActionCheck () {
-		if (selected.AP > 0) {
-			if (selected.CAC == 0) {
-				ActionHexes = new List<GameObject> ();
-				foreach (GameObject t in TileList)
-					if (t.GetComponent<Tile> ().OnLoS > -CharacterList.Length)
-						ActionHexes.Add(t);
-					
-				foreach (GameObject h in ActionHexes) {
-					Tile tmp = h.GetComponent<Tile> ();
-					if (Distance (selected.x, selected.y, selected.z, tmp.x, tmp.y, tmp.z) <= selected.CR && Action && !tmp.IsActioned) {
-						h.GetComponent<SpriteRenderer> ().sprite = MA [3];
-					} 
-//				else 
-//					origins (tmp, tmp.IsActioned);
-				}
-			} else {
-				ActionHexes = new List<GameObject> ();
-				foreach (GameObject t in TileList)
-					if (t.GetComponent<Tile> ().IsActioned) {
-						if (ActionedBy.name == selected.name && t.GetComponent<Tile> ().MCALN == CAL)
-							foreach (Tile adje in t.GetComponent<Tile> ().adje)
-								if (adje && adje.OnLoS > -CharacterList.Length) 
-									ActionHexes.Add (GameObject.Find (adje.name));
-					}
-
-				foreach (GameObject h in ActionHexes) {
-					Tile tmp = h.GetComponent<Tile> ();
-					if (Action && !tmp.IsActioned) {
-						h.GetComponent<SpriteRenderer> ().sprite = MA [3];
-//					Debug.Log (h.GetComponent<SpriteRenderer> ().sprite);
-					}
-//				else
-//					origins (tmp, tmp.IsActioned);
-				}
-			}			
-//		foreach (GameObject h in ActionHexes) {
-//			Tile tmp = h.GetComponent<Tile> ();
-//				origins (tmp, tmp.IsActioned);
-//		}
-		}
-	}
-
-	internal void AllCheck () {	//USE AT END OF TURN
+	internal void ProxNEffCheck () {
 		int count = 0;
 		foreach (GameObject c in CharacterList) {
 			if (c.transform.position == transform.position) {
@@ -168,7 +129,7 @@ public class Tile : Unarou {
 			} else
 				OnLoS--;
 		}
-		
+
 		if (actionTurn <= 0 && ActionedBy)
 			effects ();
 	}
@@ -254,9 +215,9 @@ public class Tile : Unarou {
 			selected.ele = elevation;
 			
 			PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);			
-			foreach (Tile t in PlayerTile.GetComponent<Tile> ().adje)
-				if (t)
-					t.AllCheck ();
+//			foreach (Tile t in PlayerTile.GetComponent<Tile> ().adje)
+//				if (t)
+//					t.AllCheck ();
 			PlayerTile.GetComponent<Tile> ().HasPlayer = true;
 
 			selected.MP -= MPC;
@@ -264,9 +225,9 @@ public class Tile : Unarou {
 			selected.AP -= APC;
 			selected.Moved = true;
 
-			MapGeneration (2);
+//			MapGeneration (2);
 
-			IThinkThisIsGonnaBeABadIdea ();
+//			IThinkThisIsGonnaBeABadIdea ();
 
 			if (selected.MP == 0 && selected.AP == 0)
 				Moving = false;
@@ -285,7 +246,7 @@ public class Tile : Unarou {
 		//  Actions  //
 		
 		///////////////
-		if (Action 												&& 
+/*		if (Action 												&& 
 			selected.AP > 0 									&&
 			selected.CAC < selected.CA							&&
 		    GetComponent<SpriteRenderer> ().sprite == MA [3]	) {
@@ -313,7 +274,7 @@ public class Tile : Unarou {
 			if (!Action)
 				IThinkThisIsGonnaBeABadIdea ();
 		}
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+*/		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		GameObject.Find ("Canvas/PlayerB").GetComponent<UnlimitedButtonWorks> ().ChangeTexts ();
 	}
@@ -324,24 +285,5 @@ public class Tile : Unarou {
 		ActionedBy.GetComponent<Skills> ().AddExp (EffectedPower * 100, 0);
 		IsActioned = false;
 		ActionedBy = null;
-	}
-
-	internal void IThinkThisIsGonnaBeABadIdea () {		
-/*		seen = new List<GameObject> ();
-		foreach (GameObject t in TileList) {
-			if (t.GetComponent<Tile> ().OnLoS > -CharacterList.Length)
-				seen.Add(t);
-		}
-
-*///	int count = 0;
-		foreach (GameObject h in seen) {
-			Tile tmp = h.GetComponent<Tile> ();
-//			tmp.AllCheck ();
-//			VisionCheck (h);
-//			count++;
-			if (!(NextToPlayer && Moving))
-				origins (tmp, tmp.IsActioned);
-		}
-		Debug.Log (seen.Count);
 	}
 }

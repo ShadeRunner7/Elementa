@@ -32,11 +32,7 @@ public class UnlimitedButtonWorks : Unarou {
 		me6 = GameObject.Find ("Canvas/MoveB").GetComponent<Button> ();
 		me7 = GameObject.Find ("Canvas/ActionB").GetComponent<Button> ();
 		
-		SelectChar ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+//		SelectChar ();
 	}
 
 	internal void ChangeTexts() {
@@ -73,7 +69,7 @@ public class UnlimitedButtonWorks : Unarou {
 		SelectedChar = CharacterList [k];
 		selected = SelectedChar.GetComponent<Character> ();
 		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
-		PlayerTile.GetComponent<Tile> ().IThinkThisIsGonnaBeABadIdea ();
+//		PlayerTile.GetComponent<Tile> ().IThinkThisIsGonnaBeABadIdea ();
 		ChangeTexts ();
 		buttonT.text = selected.name;
 		cam.SendMessageUpwards ("SetTarget", SelectedChar, SendMessageOptions.DontRequireReceiver);
@@ -113,7 +109,7 @@ public class UnlimitedButtonWorks : Unarou {
 			}
 		}
 		ChangeTexts ();
-		PlayerTile.GetComponent<Tile> ().IThinkThisIsGonnaBeABadIdea ();
+//		PlayerTile.GetComponent<Tile> ().IThinkThisIsGonnaBeABadIdea ();
 		PlayerTile.GetComponent<Tile> ().MoveCheck ();
 	}
 
@@ -138,8 +134,8 @@ public class UnlimitedButtonWorks : Unarou {
 			}
 		}
 		ChangeTexts ();
-		PlayerTile.GetComponent<Tile> ().IThinkThisIsGonnaBeABadIdea ();
-		PlayerTile.GetComponent<Tile> ().ActionCheck ();
+//		PlayerTile.GetComponent<Tile> ().IThinkThisIsGonnaBeABadIdea ();
+//		PlayerTile.GetComponent<Tile> ().ActionCheck ();
 	}
 	
 	public void AddLevel () {
@@ -202,7 +198,7 @@ public class UnlimitedButtonWorks : Unarou {
 		foreach (List<GameObject> h in CastAreaList) {
 			foreach (GameObject hh in h) {
 				hh.GetComponent<Tile> ().actionTurn--;
-				hh.GetComponent<Tile> ().AllCheck ();
+//				hh.GetComponent<Tile> ().AllCheck ();
 //				hh.GetComponent<Tile> ().VisionCheck ();
 			}
 		}
@@ -220,7 +216,7 @@ public class UnlimitedButtonWorks : Unarou {
 
 		k = 0;
 
-		MapGeneration (3);
+//		MapGeneration (3);
 //		Debug.Log (TileList.Length);
 		SelectChar ();
 	}
