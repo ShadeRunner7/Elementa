@@ -32,7 +32,7 @@ public class Unarou : MonoBehaviour {
 	IEnumerator WorldCreation () { 
 		MA = Resources.LoadAll <Sprite> ("MATiles");
 		Debug.Log ("Phase complete: MATile Sprites Loaded");
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (0);
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 																																				//
 		//  Characters  //																														//
@@ -64,7 +64,7 @@ public class Unarou : MonoBehaviour {
 		CharacterList = GameObject.FindGameObjectsWithTag ("Player");
 		///////////////////////////////////////////////////////
 		Debug.Log ("Phase complete: CharacterList created");
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (0);
 
 		////////// Setup CastAreaList //////////
 		int LC = 0; 
@@ -79,39 +79,34 @@ public class Unarou : MonoBehaviour {
 		CAL = 0;
 		////////////////////////////////////////
 		Debug.Log ("Phase complete: CastAreaList created");
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (0);
 
 		SelectedChar = CharacterList [0];
 		selected = CharacterList [0].GetComponent<Character> ();
 		Debug.Log ("Phase complete: SelectedChar created");
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (0);
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 																																				//
 		//  Map  //																																//
 																																				//
 		///////////																																//
-//		if (!GameObject.Find ("MapGen"))																										//
-//			Instantiate (Resources.Load ("MapGen")).name = "MapGen";																	//
-//		MapGene = GameObject.Find ("MapGen");																												//
-																																				//
+																																		//
 		MapGeneration (0);																														//
 																																				//
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		while(SweepIsRunning)
 			yield return new WaitForSeconds (DELAY);
 		Debug.Log ("Phase complete: Map generated");
 
-/*		PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);
-		Debug.Log ("Phase complete");
-		yield return new WaitForSeconds (2);
+		GameObject.Find ("Canvas/PlayerB").GetComponent<UnlimitedButtonWorks> ().SelectChar ();
+		Debug.Log ("Phase complete: PlayerTile set");
+		yield return new WaitForSeconds (0);
 
 		foreach (GameObject c in CharacterList) {
 			c.GetComponent<Character> ().PlayerSetUp ();
 		}
-		Debug.Log ("Phase complete");
-		yield return new WaitForSeconds (2);
+		Debug.Log ("Phase complete: Players set up");
+		yield return new WaitForSeconds (0);
 
 		Debug.Log("World Creation: Complete");
 
@@ -120,7 +115,6 @@ public class Unarou : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-*/		Debug.Log ("World Created");
 	}
 	
 	protected int Distance (int x0, int y0, int z0, int x1, int y1, int z1) {
@@ -128,33 +122,39 @@ public class Unarou : MonoBehaviour {
 	}
 
 	protected void MapGeneration (int xenomorph) {
-				StartCoroutine ("MakeMap", xenomorph);
+		StartCoroutine ("MakeMap", xenomorph);
 	}
 
 	IEnumerator MakeMap(int xenomorph) {
+		MapGen unarou = GameObject.Find ("Unarou").GetComponent<MapGen> ();
 		////////// First Time //////////
 		if (xenomorph == 0)
 			foreach (GameObject c in CharacterList) {
-				GetComponent<MapGen> ().GenerateMap (60, c);
+				unarou.GenerateMap (60, c);
 				while (SweepIsRunning)
 					yield return new WaitForSeconds (DELAY);
 			}
 		////////////////////////////////
 		////////// When Moving //////////
 		else if (xenomorph != 0) {
-			GetComponent<MapGen> ().GenerateMap (0, SelectedChar);
+			try {
+				unarou.GenerateMap (0, SelectedChar);
+			} catch {
+				Debug.Log ("Fail, SelectedChar = " + SelectedChar);
+			}
 			while (SweepIsRunning)
 				yield return new WaitForSeconds (DELAY);
 		}
-		if (NewMap) {
+		if (NewMap) { // Put this into newly created tiles only? only do this if all adjes are in place?
 			TileList = GameObject.FindGameObjectsWithTag ("NewTile");
 			SweepIsRunning = true;
 			foreach (GameObject MapTile in TileList) {
 				MapTile.GetComponent <Tile> ().SetUp ();
-				yield return new WaitForSeconds (DELAY);
+//				yield return new WaitForSeconds (DELAY);
 			}
 			SweepIsRunning = false;
 			NewMap = false;
+			yield return new WaitForSeconds (DELAY);
 		}		
 		/////////////////////////////////
 	}

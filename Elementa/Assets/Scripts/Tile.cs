@@ -100,10 +100,8 @@ public class Tile : Unarou {
 							hex.GetComponent<SpriteRenderer> ().sprite = MA [2];				
 						}
 					}
-//				else if (!Moving && !IsActioned) {
-//					foreach (Tile t in adje)
-//							origins (t, t.IsActioned);
-//				}
+					else 
+						origins (hex, hex.IsActioned);
 //				else
 //					origins (hex, hex.IsActioned);
 				}
@@ -215,9 +213,9 @@ public class Tile : Unarou {
 			selected.ele = elevation;
 			
 			PlayerTile = GameObject.Find (selected.x + "," + selected.y + "," + selected.z);			
-//			foreach (Tile t in PlayerTile.GetComponent<Tile> ().adje)
-//				if (t)
-//					t.AllCheck ();
+			foreach (Tile t in PlayerTile.GetComponent<Tile> ().adje)
+				if (t)
+					t.ProxNEffCheck ();
 			PlayerTile.GetComponent<Tile> ().HasPlayer = true;
 
 			selected.MP -= MPC;
@@ -225,7 +223,7 @@ public class Tile : Unarou {
 			selected.AP -= APC;
 			selected.Moved = true;
 
-//			MapGeneration (2);
+			MapGeneration (1);
 
 //			IThinkThisIsGonnaBeABadIdea ();
 

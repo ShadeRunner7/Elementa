@@ -17,12 +17,10 @@ public class MapGen : Unarou {
 			cy = c.GetComponent<Character> ().y;
 			cz = c.GetComponent<Character> ().z;
 
-			if (c == SelectedChar)
-				seen = new List<GameObject> ();
+//			if (c == SelectedChar)
+//				seen = new List<GameObject> ();
 
 		StartCoroutine("Sweep");
-
-		Debug.Log ("-----" + c.name + ": Sweep -----");
 			
 		/*
 		//////////////////////////
@@ -51,8 +49,8 @@ public class MapGen : Unarou {
 		for (gx = cx - geneD; gx <= cx + geneD; gx++) {
 			gy = -gx / 2 - Mathf.Abs (cy + geneD);	
 			gz = -(gx + 1) / 2 + Mathf.Abs (cy + geneD);
-			x = gx * .75f;
 			for (; gy <= cy + geneD; gy++) {
+				x = gx * .75f;
 				y = (gy - gz) * .45f;
 				if (y == 8.099999f)
 					y = 8.1f;
@@ -60,17 +58,37 @@ public class MapGen : Unarou {
 					y = -8.1f;
 				if (x >= 0 && y >= 0) {
 					tmp = GameObject.Find (gx + "," + gy + "," + gz);
-					if (Distance (cx, cy, cz, gx, gy, gz) <= geneD && !tmp) {
+					int d = Distance (cx, cy, cz, gx, gy, gz);
+					if (d <= geneD && !tmp) {
 						TileGenerator (x, y, gx, gy, gz);
 						NewMap = true;
-						yield return new WaitForSeconds (DELAY);
+//						yield return new WaitForSeconds (DELAY);
+					}
+					if (tmp && d <= geneD) {
+						Tile tmpT = tmp.GetComponent<Tile> ();
+						int xenomorph = CharacterList.Length;
+
+						tmpT.OnLoS = 0;
+						foreach (GameObject c in CharacterList) {
+							Character tmp0 = c.GetComponent<Character> ();
+							d = Distance (tmp0.x, tmp0.y, tmp0.z, gx, gy, gz);
+							if (d <= tmp0.LoS) {
+								tmpT.OnLoS++;
+							} else
+								tmpT.OnLoS--;
+						}
+
+						if (tmpT.OnLoS == -xenomorph && d > selected.LoS)
+							tmp.GetComponent<SpriteRenderer> ().color = Color.grey;
+						if (tmpT.OnLoS > -xenomorph)
+							tmp.GetComponent<SpriteRenderer> ().color = Color.white;
 					}
 				}
 				gz--;
 			}
 		}
 		SweepIsRunning = false;
-//		return null;
+		yield return new WaitForSeconds (DELAY);
 	}
 	
 	void TileGenerator(float x, float y, int gx, int gy, int gz) {
